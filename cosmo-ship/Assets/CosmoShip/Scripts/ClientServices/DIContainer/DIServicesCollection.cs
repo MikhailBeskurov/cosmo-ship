@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Linq.Expressions;
-using CosmoShip.Scripts.UI.Views;
+using System.Linq;
+using System.Reflection;
+using CosmoShip.Scripts.ClientServices.DIContainer.Attributes;
 using CosmoShip.Scripts.Utils.RXExtension;
-using Mono.Cecil;
 using Unity.VisualScripting;
 using UnityEngine;
 using Object = System.Object;
@@ -20,23 +19,25 @@ namespace CosmoShip.Scripts.ClientServices.DIContainer
 
     public class DIServicesCollection : IDIServicesCollection
     {
-        private List<Object> _serviceDescriptors = new List<Object>();
+        private List<Object> ServicesInstall = new List<Object>();
+        
+        private List<ServiceDescriptor> _unrelatedServices = new List<ServiceDescriptor>();
         private DisposableList _disposableList = new DisposableList();
-        private List<Type> _unrelatedServices = new List<Type>();
 
         public void BindFromInstance<TService>(TService implementation)
         {
-           
+            var service = new ServiceDescriptor(implementation, ServiceLifetime.FromInstance);
+            InitInstanceService(service);
         }
 
         public void BindFromNew<TService>()
         {
-            InitService(typeof(TService));
+            var service = new ServiceDescriptor(typeof(TService), ServiceLifetime.FromNew);
+            InitFromNewService(service);
         }
         
         public void Dispose()
         {
-            Debug.Log("Services Dispose");
             _disposableList.Dispose();
         }
 
@@ -44,49 +45,106 @@ namespace CosmoShip.Scripts.ClientServices.DIContainer
         {
             for (int i = 0; i < _unrelatedServices.Count; i++)
             {
-                InitService(_unrelatedServices[i]);
+                var service = _unrelatedServices[i];
+                if (service.ServiceLifetime == ServiceLifetime.FromNew)
+                {
+                    InitFromNewService(service);
+                }
+                else
+                {
+                    InitInstanceService(service);
+                }
             }
         }
         
-        private void InitService(Type service)
+        private void InitFromNewService(ServiceDescriptor serviceDescriptor)
         {
-            var constrctors = service.GetConstructors();
-            List<object> objectsParameters = new List<object>();
-            Debug.Log($"Start Init TService: {service.Name}");
-
-            foreach (var constructorInfo in constrctors)
+            var isSuccessInject = false;
+            var constructors = serviceDescriptor.ServiceType.GetConstructors();
+            foreach (var constructorInfo in constructors)
             {
+                List<object> objectsParameters = new List<object>();
                 var parameters = constructorInfo.GetParameters();
-                foreach (var parameter in parameters)
+                foreach (var param in parameters)
                 {
-                    var serviceDescriptor = _serviceDescriptors.Find(v => v.GetType() == parameter.ParameterType);
-                    if (serviceDescriptor != null)
+                    var findService = ServicesInstall.Find(v => v.GetType() == param.ParameterType);
+                    if (findService != null)
                     {
-                        objectsParameters.Add(serviceDescriptor);
+                        objectsParameters.Add(findService);
                     }
                 }
+                try
+                { 
+                    if (objectsParameters.Count > 0)
+                    {
+                        serviceDescriptor.SetObject(Activator.CreateInstance(serviceDescriptor.ServiceType,
+                            objectsParameters.ToArray()));
+                    }
+                    else
+                    {
+                        serviceDescriptor.SetObject(Activator.CreateInstance(serviceDescriptor.ServiceType));
+                    }
+                    
+                    isSuccessInject = true;
+                }
+                catch (Exception e)
+                {
+                   
+                }
+            }
+              
+            InstantiateService(serviceDescriptor,isSuccessInject);
+        }
+        
+        private void InitInstanceService(ServiceDescriptor serviceDescriptor)
+        {
+            var isSuccessInject = true;
+            var methods = serviceDescriptor.ServiceObject.GetType().GetMethods()
+                .ToList().FindAll(v => v.CustomAttributes
+                    .ToList().Exists(a => a.AttributeType == typeof(Injection)));
+            
+            foreach (var methodInfo in methods)
+            {
+                List<object> objectsParameters = new List<object>();
+                foreach (var param in methodInfo.GetParameters())
+                {
+                    var findService = ServicesInstall.Find(v => v.GetType() == param.ParameterType);
+                    if (findService != null)
+                    { 
+                        objectsParameters.Add(findService);
+                    }
+                }
+                try
+                {
+                    methodInfo.Invoke(serviceDescriptor.ServiceObject, objectsParameters.ToArray());
+                }
+                catch (Exception e)
+                {
+                    isSuccessInject = false;
+                }
             }
 
-            InstantiateService(service, objectsParameters.ToArray());
+            InstantiateService(serviceDescriptor, isSuccessInject);
         }
-
-        private void InstantiateService(Type service, object[] objectsParameters)
+        
+        private void InstantiateService(ServiceDescriptor serviceDescriptor, bool isSuccessInject)
         {
-            try
-            {
-                var instanceService = Activator.CreateInstance(service, objectsParameters);
-                _serviceDescriptors.Add(instanceService);
-                
-                if (_unrelatedServices.Exists(v => v.GetType() == service))
+            var isUnrelatedServices = _unrelatedServices.Exists(v => v.ServiceObject == serviceDescriptor.ServiceObject);
+            if(isSuccessInject){
+                var instanceService = serviceDescriptor.ServiceObject;
+                ServicesInstall.Add(instanceService);
+                if (isUnrelatedServices)
                 {
-                    _unrelatedServices.Remove(service);
+                    _unrelatedServices.Remove(serviceDescriptor);
                 }
-
                 InitServices();
             }
-            catch (Exception e)
+            else
             {
-                _unrelatedServices.Add(service);
+                if (!isUnrelatedServices)
+                {
+                    _unrelatedServices.Add(serviceDescriptor);
+                }
             }
         }
     }
