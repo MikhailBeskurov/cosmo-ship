@@ -1,10 +1,12 @@
 ﻿using System;
-using CosmoShip.Scripts.Utils.RXExtension;
+using CosmoShip.Scripts.ClientServices.RXExtension.Property.SubscribeTypes;
 
 namespace CosmoShip.Scripts.ClientServices.RXExtension.Property
 {
     public class ReactiveProperty<DataType> : IReadOnlyReactiveProperty<DataType>
     {
+        private SubscribeValueChange<DataType> _subscribeValueChange = new SubscribeValueChange<DataType>();
+        
         public DataType Value
         {
             get
@@ -14,28 +16,16 @@ namespace CosmoShip.Scripts.ClientServices.RXExtension.Property
             set
             {
                 _value = value;
-                _onValueChanged?.Invoke(_value);
+                _subscribeValueChange.OnAction(_value);
             }
         }
 
         private DataType _value;
-        private event Action<DataType> _onValueChanged;
-        
-        public IReadOnlyReactiveProperty<DataType> Subscribe(Action<DataType> onAction)
-        {
-            _onValueChanged += onAction;
-            return this;
-        }
-        
-        public IReadOnlyReactiveProperty<DataType> AddDispose(DisposableList disposableList)
-        {
-            disposableList.Add(this);
-            return this;
-        }
 
-        public void Dispose()
+        public ISubscribeValueChange<DataType> Subscribe(Action<DataType> onAction)
         {
-            _onValueChanged = null;
+            _subscribeValueChange.Subscribe(onAction);
+            return _subscribeValueChange;
         }
     }
 }
