@@ -9,7 +9,6 @@ namespace CosmoShip.Scripts.Installers
     public class MainMenuInstaller : MonoInstaller
     {
         [SerializeField] private Canvas _canvas;
-        
         private GameResourcesManager _gameResourcesManager;
         private AssetProvider _assetProvider;
         private UIManager _uiManager;
