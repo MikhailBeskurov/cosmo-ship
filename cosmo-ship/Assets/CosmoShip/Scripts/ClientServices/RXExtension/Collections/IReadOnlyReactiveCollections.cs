@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CosmoShip.Scripts.ClientServices.RXExtension.SubscribesType;
 
 namespace CosmoShip.Scripts.ClientServices.RXExtension.Collections
 {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using CosmoShip.Scripts.Utils.RXExtension;
-using UnityEngine;
 
-namespace CosmoShip.Scripts.ClientServices.RXExtension
+namespace CosmoShip.Scripts.ClientServices.RXExtension.SubscribesType
 {
     public class ObserveAddOrRemove<DataType> : IObserveAddOrRemove<DataType>
     {

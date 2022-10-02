@@ -1,7 +1,7 @@
 ﻿using System;
 using CosmoShip.Scripts.Utils.RXExtension;
 
-namespace CosmoShip.Scripts.ClientServices.RXExtension
+namespace CosmoShip.Scripts.ClientServices.RXExtension.SubscribesType
 {
     public interface IObserveReset<DataType>
     {
