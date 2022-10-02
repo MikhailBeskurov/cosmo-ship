@@ -1,4 +1,5 @@
-﻿using CosmoShip.Scripts.ClientServices;
+﻿using System.Collections.Generic;
+using CosmoShip.Scripts.ClientServices;
 using CosmoShip.Scripts.ClientServices.DIContainer;
 using CosmoShip.Scripts.UI.Core;
 using CosmoShip.Scripts.World.Core;
@@ -9,6 +10,7 @@ namespace CosmoShip.Scripts.Installers
     public class MainMenuInstaller : MonoInstaller
     {
         [SerializeField] private Canvas _canvas;
+        
         private GameResourcesManager _gameResourcesManager;
         private AssetProvider _assetProvider;
         private UIManager _uiManager;
