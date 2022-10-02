@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CosmoShip.Scripts.ClientServices.RXExtension.SubscribesType;
+using CosmoShip.Scripts.ClientServices.RXExtension.Collections.SubscribeTypes;
 
 namespace CosmoShip.Scripts.ClientServices.RXExtension.Collections
 {
@@ -8,35 +8,35 @@ namespace CosmoShip.Scripts.ClientServices.RXExtension.Collections
         public List<DataType> Values => values;
         private List<DataType> values = new List<DataType>();
 
-        private List<ObserveAddOrRemove<DataType>> _addSubscribes = new List<ObserveAddOrRemove<DataType>>();
-        private List<ObserveAddOrRemove<DataType>> _removeSubscribes = new List<ObserveAddOrRemove<DataType>>();
-        private List<ObserveResetSubscribe<DataType>> _resetSubscribes = new List<ObserveResetSubscribe<DataType>>();
-        private List<ObserveCountChanged> _countChangeSubscribes = new List<ObserveCountChanged>();
+        private List<SubscribeAddOrRemove<DataType>> _addSubscribes = new List<SubscribeAddOrRemove<DataType>>();
+        private List<SubscribeAddOrRemove<DataType>> _removeSubscribes = new List<SubscribeAddOrRemove<DataType>>();
+        private List<SubscribeReset<DataType>> _resetSubscribes = new List<SubscribeReset<DataType>>();
+        private List<SubscribeCountChange> _countChangeSubscribes = new List<SubscribeCountChange>();
         
-        public IObserveAddOrRemove<DataType> ObserveAdd()
+        public ISubscribeAddOrRemove<DataType> ObserveAdd()
         {
-            var subscribe = new ObserveAddOrRemove<DataType>();
+            var subscribe = new SubscribeAddOrRemove<DataType>();
             _addSubscribes.Add(subscribe);
             return subscribe;
         }
         
-        public IObserveAddOrRemove<DataType> ObserveRemove()
+        public ISubscribeAddOrRemove<DataType> ObserveRemove()
         {
-            var subscribe = new ObserveAddOrRemove<DataType>();
+            var subscribe = new SubscribeAddOrRemove<DataType>();
             _removeSubscribes.Add(subscribe);
             return subscribe;
         }
         
-        public IObserveReset<DataType> ObserveReset()
+        public ISubscribeReset<DataType> ObserveReset()
         {   
-            var subscribe = new ObserveResetSubscribe<DataType>();
+            var subscribe = new SubscribeReset<DataType>();
             _resetSubscribes.Add(subscribe);
             return subscribe;
         }
         
-        public IObserveCountChanged ObserveCountChange()
+        public ISubscribeCountChange ObserveCountChange()
         {   
-            var subscribe = new ObserveCountChanged();
+            var subscribe = new SubscribeCountChange();
             _countChangeSubscribes.Add(subscribe);
             return subscribe;
         }
