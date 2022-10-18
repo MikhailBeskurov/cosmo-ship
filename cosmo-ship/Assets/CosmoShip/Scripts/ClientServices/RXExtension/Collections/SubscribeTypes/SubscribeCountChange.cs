@@ -1,5 +1,4 @@
 ﻿using System;
-using CosmoShip.Scripts.Utils.RXExtension;
 
 namespace CosmoShip.Scripts.ClientServices.RXExtension.Collections.SubscribeTypes
 { 

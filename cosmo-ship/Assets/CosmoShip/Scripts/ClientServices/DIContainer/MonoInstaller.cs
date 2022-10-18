@@ -1,5 +1,4 @@
 ﻿using System;
-using CosmoShip.Scripts.Utils.RXExtension;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.ClientServices.DIContainer

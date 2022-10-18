@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CosmoShip.Scripts.Utils.RXExtension
+namespace CosmoShip.Scripts.ClientServices.RXExtension
 {
     public class DisposableList : ICollection<IDisposable>, IDisposable
     {

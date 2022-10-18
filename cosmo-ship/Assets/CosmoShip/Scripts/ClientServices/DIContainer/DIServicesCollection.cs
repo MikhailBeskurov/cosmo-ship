@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using CosmoShip.Scripts.ClientServices.DIContainer.Attributes;
-using CosmoShip.Scripts.Utils.RXExtension;
+using CosmoShip.Scripts.ClientServices.RXExtension;
+using UnityEngine;
 using Object = System.Object;
 
 namespace CosmoShip.Scripts.ClientServices.DIContainer
@@ -12,6 +14,7 @@ namespace CosmoShip.Scripts.ClientServices.DIContainer
     {
         void BindFromInstance<TService>(TService implementation);
         void BindFromNew<TService>();
+        public TService GetInstance<TService>() where TService : class;
         void Dispose();
     }
 
@@ -32,6 +35,12 @@ namespace CosmoShip.Scripts.ClientServices.DIContainer
         {
             var service = new ServiceDescriptor(typeof(TService), ServiceLifetime.FromNew);
             Bind(service);
+        }
+        
+        public TService GetInstance<TService>() where TService : class
+        {
+            var service = ServicesInstall.Find(v => v.GetType() == typeof(TService)) as TService;
+            return service;
         }
         
         private bool InjectionConstructors(ServiceDescriptor serviceDescriptor)
@@ -142,12 +151,13 @@ namespace CosmoShip.Scripts.ClientServices.DIContainer
             
             if(isSuccessInject)
             {
-                ServicesInstall.Add( serviceDescriptor.ServiceObject);
+                ServicesInstall.Add(serviceDescriptor.ServiceObject);
                 AddDisposable(serviceDescriptor);
                 if (isUnrelatedServices)
                 {
                     _unrelatedServices.Remove(serviceDescriptor);
                 }
+                Debug.Log(serviceDescriptor.ServiceObject.GetType().Name);
                 InitServices();
             }
             else
