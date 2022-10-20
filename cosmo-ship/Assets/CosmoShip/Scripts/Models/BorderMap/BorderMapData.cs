@@ -4,10 +4,10 @@ namespace CosmoShip.Scripts.Models.BorderMap
 {
     public class BorderMapData
     {
-        public BorderMapData(Rect rectBorderMap)
-        {
-            Widht = rectBorderMap.width;
-            Height = rectBorderMap.height;
+        public BorderMapData(float camOrthographicSize)
+        { 
+            Height = Camera.main.orthographicSize * 2.0f; 
+            Widht = Height * Screen.width / Screen.height;
         }
 
         public readonly float Widht;

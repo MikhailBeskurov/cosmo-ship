@@ -1,5 +1,7 @@
 ﻿using System;
+using CosmoShip.Scripts.ClientServices.RXExtension;
 using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+using CosmoShip.Scripts.Models.BorderMap;
 using CosmoShip.Scripts.Models.Player;
 using CosmoShip.Scripts.Modules.Movements;
 using CosmoShip.Scripts.ScriptableObjects.Player;
@@ -12,32 +14,21 @@ namespace CosmoShip.Scripts.Modules.Player
     {
         public IReadOnlyReactiveProperty<bool> OnActivePlayer { get; }
         public PlayerData PlayerData { get; }
-        public IReadOnlyReactiveProperty<Vector2> PositionPlayer { get; }
-        public IReadOnlyReactiveProperty<Quaternion> RotationPlayer { get; }
+        public void SpawnPlayer();
     }
 
-    public class PlayerModule : IPlayerModule, IDisposable
+    public class PlayerModule : IPlayerModule
     {        
         public PlayerData PlayerData => _playerData;
-        public IReadOnlyReactiveProperty<bool> OnActivePlayer => _onActivePlayer;
-        public IReadOnlyReactiveProperty<Vector2> PositionPlayer => _movementModule.Position;
-        public IReadOnlyReactiveProperty<Quaternion> RotationPlayer => _movementModule.Rotation;
-
-        private PlayerData _playerData;
-        private ReactiveProperty<Vector2> _positionPlayer = new ReactiveProperty<Vector2>();
-        private ReactiveProperty<Quaternion> _rotationPlayer = new ReactiveProperty<Quaternion>();
-        private ReactiveProperty<bool> _onActivePlayer = new ReactiveProperty<bool>();
         
-        private readonly PlayerInputControls _playerInputControls;
+        public IReadOnlyReactiveProperty<bool> OnActivePlayer => _onActivePlayer;
+        
+        private ReactiveProperty<bool> _onActivePlayer = new ReactiveProperty<bool>();
+        private PlayerData _playerData;
         private readonly PlayerSettings _playerSettings;
-        private IMovementModule _movementModule;
-        private IUpdateModule _updateModule;
-
-        public PlayerModule(PlayerSettings playerSettings, PlayerInputControls playerInputControls, IUpdateModule updateModule)
+        
+        public PlayerModule(PlayerSettings playerSettings, PlayerInputControls playerInputControls)
         {
-            _updateModule = updateModule;
-            _playerInputControls = playerInputControls;
-            _playerInputControls.Enable();
             _playerSettings = playerSettings;
             Init();
         }
@@ -49,48 +40,11 @@ namespace CosmoShip.Scripts.Modules.Player
             {
                 _onActivePlayer.Value = false;
             });
-            
-            _movementModule = new InputMovement(_positionPlayer, _rotationPlayer, _playerData.SpeedMovement,
-                _playerData.SpeedRotation,_playerData.InertiaVelocity);
-            
-            _updateModule.AddAction(_movementModule.Update);
-            
-            BindPositionInput();
-            BindRotationInput();
-            
-            _playerInputControls.SpaceShip.Spawn.performed += context => 
-            { 
-                _onActivePlayer.Value = true;
-            };
-        }
-
-        private void BindPositionInput()
-        {
-            _playerInputControls.SpaceShip.Move.performed += context =>
-            {
-                _positionPlayer.Value = context.ReadValue<Vector2>();
-            };
-            _playerInputControls.SpaceShip.Move.canceled += context =>
-            {
-                _positionPlayer.Value = Vector2.zero;
-            };
         }
         
-        private void BindRotationInput()
+        public void SpawnPlayer()
         {
-            _playerInputControls.SpaceShip.Rotation.performed += context =>
-            {
-                _rotationPlayer.Value = Quaternion.Euler(new Vector3(0,0,context.ReadValue<Vector2>().x));
-            };
-            _playerInputControls.SpaceShip.Rotation.canceled += context =>
-            {
-                _rotationPlayer.Value = Quaternion.identity;
-            };
-        }
-
-        public void Dispose()
-        {
-            _playerInputControls.Disable();
+            _onActivePlayer.Value = true;
         }
     }
 }

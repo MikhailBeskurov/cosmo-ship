@@ -14,19 +14,19 @@ namespace CosmoShip.Scripts.World.Models.Entities
     {
         public readonly IReadOnlyReactiveCollections<EntityData> Entities;
         public readonly IUpdateModule UpdateModule;
-        
-        private EntitiesObjects _entitiesObjects;
 
-        public EntitiesModel(IEntitiesModule entitiesModule, EntitiesObjects entitiesObjects, IUpdateModule updateModule)
+        private EntitiesSettings _entitiesSettings;
+
+        public EntitiesModel(IEntitiesModule entitiesModule, EntitiesSettings entitiesSettings, IUpdateModule updateModule)
         {
-            _entitiesObjects = entitiesObjects;
+            _entitiesSettings = entitiesSettings;
             UpdateModule = updateModule;
             Entities = entitiesModule.Entities;
         }
         
         public BaseEntityView GetEntityObject(EntityType entityType)
         {
-            return _entitiesObjects.GetEntityObject(entityType);
+            return _entitiesSettings.GetEntityObject(entityType);
         }
     }
 }

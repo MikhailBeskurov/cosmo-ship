@@ -10,19 +10,21 @@ namespace CosmoShip.Scripts.Models.Entities
     {
         public readonly EntityType TypeEntity;
         public readonly int Damage;
+        public readonly int ScoreOnDestroy;
         public readonly float MoveSpeedEntity;
         public readonly float RotationSpeedEntity;
         
-        public int HealtPoints => _healtPoints;
-        
         public IReadOnlyReactiveProperty<Vector2> DirectionMove => _directionMove;
+        public int HealtPoints => _healtPoints;
         public Vector2 CurrentPosition => _currentPosition;
         
         private int _healtPoints;
         private Vector2 _currentPosition;
         private ReactiveProperty<Vector2> _directionMove = new ReactiveProperty<Vector2>();
         private event UnityAction _onDestroy;
+        
         private DisposableList _disposableList = new DisposableList();
+        
         public EntityData(EntitiesSettingsData settingsData, Vector2 currentPosition, Vector2 directionMove)
         {
             TypeEntity = settingsData.EntityType;
@@ -32,6 +34,7 @@ namespace CosmoShip.Scripts.Models.Entities
             RotationSpeedEntity = settingsData.RotationSpeedEntity;
             _currentPosition = currentPosition;
             _directionMove.Value = directionMove;
+            ScoreOnDestroy = settingsData.ScoreOnDestroy;
         }
 
         public void OnDestroy(UnityAction onDestroy)
@@ -39,7 +42,7 @@ namespace CosmoShip.Scripts.Models.Entities
             _onDestroy += onDestroy;
         }
 
-        public void OnDamage(int healtPoints)
+        public void PutDamage(int healtPoints)
         {
             _healtPoints -= healtPoints;
             if (_healtPoints <= 0)

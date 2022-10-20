@@ -18,10 +18,6 @@ namespace CosmoShip.Scripts.World.Views.Entities
         public override void Bind(EntitiesModel model)
         {
             _model = model;
-            foreach (var entitiesValue in  model.Entities.Values)
-            {
-                AddEntity(entitiesValue);
-            }
             model.Entities.ObserveAdd().Subscribe(v =>
             {
                 AddEntity(v);
@@ -51,8 +47,8 @@ namespace CosmoShip.Scripts.World.Views.Entities
         {
             var entity = PullEntityView(entityData);
             entity.Init(entityData);
-            _queueEntityView.Enqueue(entity);
             entity.Show();
+            _queueEntityView.Enqueue(entity);
         }
         
         private void RemoveEntity(EntityData entityData)
@@ -75,6 +71,7 @@ namespace CosmoShip.Scripts.World.Views.Entities
                     Quaternion.identity);
                 _entityViews.Add(entity);
             }
+            
             return entity;
         }
         

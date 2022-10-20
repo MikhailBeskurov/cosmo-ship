@@ -2,7 +2,7 @@
 {
     public enum ScenesData
     {
-        MainMenu,
-        Battle
+        MainMenuScene,
+        BattleScene
     }
 }

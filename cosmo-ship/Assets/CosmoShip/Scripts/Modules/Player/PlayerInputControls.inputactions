@@ -40,15 +40,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Spawn",
-                    "type": "Button",
-                    "id": "90c07a88-ab59-4686-8dcf-7f5298c745dd",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -337,17 +328,6 @@
                     "action": "Rotation",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "6313d260-0a4b-49a7-ae00-764a9939cd70",
-                    "path": "<Keyboard>/g",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Spawn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

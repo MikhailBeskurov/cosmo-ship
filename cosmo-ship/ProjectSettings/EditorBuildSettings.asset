@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/CosmoShip/Scenes/MainMenuScene.unity
+    guid: e5f4a02293e8d924a93c6295203c3ff3
+  - enabled: 1
+    path: Assets/CosmoShip/Scenes/BattleScene.unity
+    guid: 076bdc8226f71884e89ba566c4ee0f1c
   m_configObjects: {}

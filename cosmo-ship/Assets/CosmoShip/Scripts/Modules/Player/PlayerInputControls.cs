@@ -64,15 +64,6 @@ namespace CosmoShip.Scripts.Modules.Player
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Spawn"",
-                    ""type"": ""Button"",
-                    ""id"": ""90c07a88-ab59-4686-8dcf-7f5298c745dd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -361,17 +352,6 @@ namespace CosmoShip.Scripts.Modules.Player
                     ""action"": ""Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6313d260-0a4b-49a7-ae00-764a9939cd70"",
-                    ""path"": ""<Keyboard>/g"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Spawn"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -407,7 +387,6 @@ namespace CosmoShip.Scripts.Modules.Player
             m_SpaceShip_Rotation = m_SpaceShip.FindAction("Rotation", throwIfNotFound: true);
             m_SpaceShip_BlasterShoot = m_SpaceShip.FindAction("BlasterShoot", throwIfNotFound: true);
             m_SpaceShip_LaserShoot = m_SpaceShip.FindAction("LaserShoot", throwIfNotFound: true);
-            m_SpaceShip_Spawn = m_SpaceShip.FindAction("Spawn", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -471,7 +450,6 @@ namespace CosmoShip.Scripts.Modules.Player
         private readonly InputAction m_SpaceShip_Rotation;
         private readonly InputAction m_SpaceShip_BlasterShoot;
         private readonly InputAction m_SpaceShip_LaserShoot;
-        private readonly InputAction m_SpaceShip_Spawn;
         public struct SpaceShipActions
         {
             private @PlayerInputControls m_Wrapper;
@@ -480,7 +458,6 @@ namespace CosmoShip.Scripts.Modules.Player
             public InputAction @Rotation => m_Wrapper.m_SpaceShip_Rotation;
             public InputAction @BlasterShoot => m_Wrapper.m_SpaceShip_BlasterShoot;
             public InputAction @LaserShoot => m_Wrapper.m_SpaceShip_LaserShoot;
-            public InputAction @Spawn => m_Wrapper.m_SpaceShip_Spawn;
             public InputActionMap Get() { return m_Wrapper.m_SpaceShip; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -502,9 +479,6 @@ namespace CosmoShip.Scripts.Modules.Player
                     @LaserShoot.started -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnLaserShoot;
                     @LaserShoot.performed -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnLaserShoot;
                     @LaserShoot.canceled -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnLaserShoot;
-                    @Spawn.started -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnSpawn;
-                    @Spawn.performed -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnSpawn;
-                    @Spawn.canceled -= m_Wrapper.m_SpaceShipActionsCallbackInterface.OnSpawn;
                 }
                 m_Wrapper.m_SpaceShipActionsCallbackInterface = instance;
                 if (instance != null)
@@ -521,9 +495,6 @@ namespace CosmoShip.Scripts.Modules.Player
                     @LaserShoot.started += instance.OnLaserShoot;
                     @LaserShoot.performed += instance.OnLaserShoot;
                     @LaserShoot.canceled += instance.OnLaserShoot;
-                    @Spawn.started += instance.OnSpawn;
-                    @Spawn.performed += instance.OnSpawn;
-                    @Spawn.canceled += instance.OnSpawn;
                 }
             }
         }
@@ -552,7 +523,6 @@ namespace CosmoShip.Scripts.Modules.Player
             void OnRotation(InputAction.CallbackContext context);
             void OnBlasterShoot(InputAction.CallbackContext context);
             void OnLaserShoot(InputAction.CallbackContext context);
-            void OnSpawn(InputAction.CallbackContext context);
         }
     }
 }

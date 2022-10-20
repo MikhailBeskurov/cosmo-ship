@@ -14,7 +14,7 @@ namespace CosmoShip.Scripts.Modules.Movements
         private float _movementSpeed;
         
         private int _raycastCount = 12;
-        private float _maxSeeAhead = 4f;
+        private float _maxSeeAhead = 5f;
         private float _angleAhead = 135f;
         
         private Vector2 _ahead;
@@ -53,6 +53,11 @@ namespace CosmoShip.Scripts.Modules.Movements
                 deltaTime * _movementSpeed);
         }
         
+        public void TeleportationToPoint(Vector2 position)
+        {
+            _position.Value = position;
+        }
+        
         private Vector2 collisionAvoidance()
         {
             Vector2 sumDir = Vector2.zero;
@@ -72,6 +77,7 @@ namespace CosmoShip.Scripts.Modules.Movements
 
             // Debug.DrawRay(Position.Value, (Vector2) dir * _maxSeeAhead,
             //     new Color(1f, 0.02f, 0f));
+            
             foreach (var hit2D in hit)
             {
                 if (hit2D.collider != null &&  hit2D.collider.gameObject.GetHashCode() != _hashCode && 

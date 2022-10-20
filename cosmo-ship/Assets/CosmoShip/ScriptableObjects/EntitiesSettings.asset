@@ -14,22 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entitiesSettings:
   - EntityType: 0
+    EntityView: {fileID: 3256670762303427101, guid: d916f7dd5be4b65438a896cfc53d5f56, type: 3}
     HealtsPoints: 2
+    ScoreOnDestroy: 500
+    Damage: 1
     MoveSpeedEntity: 5
     RotationSpeedEntity: 10
-    Damage: 1
   - EntityType: 1
+    EntityView: {fileID: 8163539068442330423, guid: d5ebfa67c8f1c8e48b8a1d38653bb8e5, type: 3}
     HealtsPoints: 1
+    ScoreOnDestroy: 250
+    Damage: 1
     MoveSpeedEntity: 10
     RotationSpeedEntity: 15
-    Damage: 1
   - EntityType: 2
+    EntityView: {fileID: 3096508488527732820, guid: fe48d1cc729d38043accf79eb60de37a, type: 3}
     HealtsPoints: 1
+    ScoreOnDestroy: 100
+    Damage: 1
     MoveSpeedEntity: 15
     RotationSpeedEntity: 20
-    Damage: 1
   - EntityType: 3
+    EntityView: {fileID: 5005897702732414764, guid: c2d3dc479d782f04db3626bffe9df10e, type: 3}
     HealtsPoints: 1
+    ScoreOnDestroy: 250
+    Damage: 1
     MoveSpeedEntity: 10
     RotationSpeedEntity: 20
-    Damage: 1

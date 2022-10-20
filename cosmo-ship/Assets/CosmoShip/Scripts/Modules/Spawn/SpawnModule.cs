@@ -12,34 +12,69 @@ namespace CosmoShip.Scripts.Modules.Spawn
     public interface ISpawnModule
     {
         public event Action<EntityData> OnAddEntity;
+        public void StartSpawnAsteroids(float durationSpawn);
+        public void StopSpawnAsteroids();
+        public void StartSpawnFlyingSaucer(float durationSpawn);
+        public void StopSpawnFlyingSaucer();
     }
     
     public class SpawnModule : ISpawnModule
     {
         public event Action<EntityData> OnAddEntity;
         
-        private Vector2 _positionPlayer;
         private BorderMapData _borderMapData;
         private EntitiesSettings _entitiesSettings;
-        private IPlayerModule _playerModule;
+        private IPlayerMovementModule _playerMovementModule;
 
-        public SpawnModule(BorderMapData borderMapData, EntitiesSettings entitiesSettings, IPlayerModule playerModule)
+        private Task _spawnAsteroids;
+        private Task _spawnFlyingSaucer;
+        
+        public SpawnModule(BorderMapData borderMapData, EntitiesSettings entitiesSettings, 
+            IPlayerMovementModule playerMovementModule)
         {
-            _playerModule = playerModule;
+            _playerMovementModule = playerMovementModule;
             _entitiesSettings = entitiesSettings;
             _borderMapData = borderMapData;
-            var startSpawn = StartSpawn();
         }
 
-        private async Task StartSpawn()
+        public void StartSpawnAsteroids(float durationSpawn)
         {
-            await Task.Delay(1500);
+            StopSpawnAsteroids();
+            float durationMilSec = durationSpawn * 1000;
+            _spawnAsteroids = СyclicSpawnAsteroids((int)durationMilSec);
+        }
+
+        public void StopSpawnAsteroids()
+        {
+            if (_spawnAsteroids != null)
+            {
+                _spawnAsteroids.Dispose();
+            }
+        }
+
+        public void StartSpawnFlyingSaucer(float durationSpawn)
+        {
+            StopSpawnFlyingSaucer();
+            float durationMilSec = durationSpawn * 1000;
+            _spawnFlyingSaucer = СyclicSpawnFlyingSaucer((int)durationMilSec);
+        }
+
+        public void StopSpawnFlyingSaucer()
+        {
+            if (_spawnFlyingSaucer != null)
+            {
+                _spawnFlyingSaucer.Dispose();
+            }
+        }
+
+        private async Task СyclicSpawnAsteroids(int durationSpawn)
+        {
             while (true)
             {
-                var rnd = Random.Range(0, 3);
+                var rnd = Random.Range(0, 2);
                 var initPosition = GetInitPosition();
-                var initDirectionMove = Quaternion.AngleAxis(Random.Range(-20f, 20f), Vector3.forward) *
-                                        (_positionPlayer - initPosition).normalized;
+                var initDirectionMove = Quaternion.AngleAxis(Random.Range(-30f, 30f), Vector3.forward) *
+                                        (_playerMovementModule.PositionPlayer.Value - initPosition).normalized;
                 switch (rnd)
                 {
                     case 0:
@@ -48,17 +83,23 @@ namespace CosmoShip.Scripts.Modules.Spawn
                     case 1:
                         SpawnMediumAsteroids(initPosition,initDirectionMove);
                         break;
-                    case 2:
-                        SpawnFlyingSaucer(initPosition);
-                        break;
                 }
-                await Task.Delay(1500);
+                await Task.Delay(durationSpawn);
             }
         }
-
+        
+        private async Task СyclicSpawnFlyingSaucer(int durationSpawn)
+        {
+            while (true)
+            {
+                SpawnFlyingSaucer(GetInitPosition());
+                await Task.Delay(durationSpawn);
+            }
+        }
+        
         private void SpawnBigAsteroids(Vector2 baseInitPosition, Vector2 baseDirectionMove)
         {
-            var entity = new EntityData(_entitiesSettings.GetEntityObject(EntityType.BigAsteroid), baseInitPosition,
+            var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.BigAsteroid), baseInitPosition,
                 baseDirectionMove);
             entity.OnDestroy(() => SpawnMediumAsteroids(entity.CurrentPosition, baseDirectionMove));
             OnAddEntity?.Invoke(entity);
@@ -66,7 +107,7 @@ namespace CosmoShip.Scripts.Modules.Spawn
         
         private void SpawnMediumAsteroids(Vector2 baseInitPosition, Vector2 baseDirectionMove)
         {
-            EntityData entity = new EntityData(_entitiesSettings.GetEntityObject(EntityType.MediumAsteroid), baseInitPosition,
+            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.MediumAsteroid), baseInitPosition,
                   baseDirectionMove);
             entity.OnDestroy(() => SpawnSmallAsteroids(entity.CurrentPosition, baseDirectionMove));
             OnAddEntity?.Invoke(entity);
@@ -81,26 +122,39 @@ namespace CosmoShip.Scripts.Modules.Spawn
             { 
                 int charValue = i % 2 == 0 ? -1 : 0;
                 var directionMove = Quaternion.AngleAxis(charValue * angel, Vector3.forward) * baseDirectionMove;
-                var entity = new EntityData(_entitiesSettings.GetEntityObject(EntityType.SmallAsteroid), baseInitPosition,
+                var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.SmallAsteroid), baseInitPosition,
                     directionMove);
                 OnAddEntity?.Invoke(entity);
             }
         }
         
-        private void SpawnFlyingSaucer(Vector2 baseInitPosition)
+        private EntityData SpawnFlyingSaucer(Vector2 baseInitPosition)
         {
-            EntityData entity = new EntityData(_entitiesSettings.GetEntityObject(EntityType.FlyingSauce), baseInitPosition,
-                _playerModule.PositionPlayer.Value);
-            entity.SubscribeDirectionMove(_playerModule.PositionPlayer);
+            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.FlyingSauce), baseInitPosition,
+                _playerMovementModule.PositionPlayer.Value);
+            entity.SubscribeDirectionMove(_playerMovementModule.PositionPlayer);
             OnAddEntity?.Invoke(entity);
+            return entity;
         }
         
         private Vector2 GetInitPosition()
         {
-            float randomPosX = Random.Range(-1f,1f);
-            float randomPosY = Random.Range(-1f,1f);
-            return new Vector2(_positionPlayer.x + randomPosX * (_borderMapData.Widht/ 20),
-                _positionPlayer.y + randomPosY * (_borderMapData.Height/ 20));
+            float widht = _borderMapData.Widht;
+            float height = _borderMapData.Height;
+            int rnd = Random.Range(-1,1);
+            Vector2 initPosition = Vector2.zero;
+            
+            if (rnd == -1)
+            {
+                float rndHeight = ((Random.Range(-1, 1) < 0) ? -1 : 1) * height;
+                initPosition = new Vector2(Random.Range(-widht,widht),rndHeight);
+            }
+            else
+            {  
+                float rndWidht = ((Random.Range(-1, 1) < 0) ? -1 : 1) * widht;
+                initPosition = new Vector2(rndWidht,Random.Range(-height,height));
+            }
+            return initPosition;
         }
     }
 }

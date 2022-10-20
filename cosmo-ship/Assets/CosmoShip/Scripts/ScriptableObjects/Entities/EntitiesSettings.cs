@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CosmoShip.Scripts.Models.Entities;
+using CosmoShip.Scripts.World.Views.Entities.Entity;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.ScriptableObjects.Entities
@@ -10,9 +11,14 @@ namespace CosmoShip.Scripts.ScriptableObjects.Entities
     {
         [SerializeField] private List<EntitiesSettingsData> _entitiesSettings = new List<EntitiesSettingsData>();
         
-        public EntitiesSettingsData GetEntityObject(EntityType entityType)
+        public EntitiesSettingsData GetEntitySettings(EntityType entityType)
         {
             return _entitiesSettings.Find(v => v.EntityType == entityType);
+        }
+        
+        public BaseEntityView GetEntityObject(EntityType entityType)
+        {
+            return _entitiesSettings.Find(v => v.EntityType == entityType).EntityView;
         }
     }
     
@@ -20,9 +26,17 @@ namespace CosmoShip.Scripts.ScriptableObjects.Entities
     public class EntitiesSettingsData
     {
         public EntityType EntityType;
+        public BaseEntityView EntityView;
+        
+        [Space]
+        
         public int HealtsPoints = 1;
+        public int ScoreOnDestroy = 0;
+        public int Damage = 1;
+        
+        [Space]
+        
         public float MoveSpeedEntity = 5f;
         public float RotationSpeedEntity = 10f;
-        public int Damage = 1;
     }
 }

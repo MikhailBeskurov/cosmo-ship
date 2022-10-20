@@ -34,5 +34,10 @@ namespace CosmoShip.Scripts.Modules.Movements
             _rotation.Value = Quaternion.Lerp(_rotation.Value, 
                 Quaternion.Euler(_rotation.Value.eulerAngles + _directionRotation), deltaTime * _speedRotation);
         }
+
+        public void TeleportationToPoint(Vector2 position)
+        {
+            _position.Value = position;
+        }
     }
 }

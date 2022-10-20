@@ -17,23 +17,19 @@ namespace CosmoShip.Scripts.World.Views.Entities.Entity
 
             _movementModule.Position.Subscribe(v =>
             {
-                UpdatePositionRotation(v,_movementModule.Rotation.Value);
+                EntityInfo.SetCurrentPosition(v);
+                transform.position = v;
             });
-            
             _movementModule.Rotation.Subscribe(v =>
             {
-                UpdatePositionRotation(_movementModule.Position.Value,v);
+                transform.rotation = v;
             });
+            _movementModule.TeleportationToPoint(entityData.CurrentPosition);
         }
-
-        private void UpdatePositionRotation(Vector2 pos, Quaternion rot)
-        {
-            transform.position = pos;
-            transform.rotation = rot;
-        }
-
+        
         public override void UpdateView(float deltaTime)
         {
+            base.UpdateView(deltaTime);
             _movementModule.Update(Time.deltaTime);
         }
     }

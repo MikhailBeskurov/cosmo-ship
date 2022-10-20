@@ -9,5 +9,6 @@ namespace CosmoShip.Scripts.Modules.Movements
         public IReadOnlyReactiveProperty<Quaternion> Rotation { get; }
         
         public void Update(float deltaTime);
+        public void TeleportationToPoint(Vector2 position);
     }
 }

@@ -12,12 +12,18 @@ namespace CosmoShip.Scripts.World.Views.Bullets
         private Action<GameObject, int> _onTriggerEnter;
         private BulletData _bulletData;
         
+        private float _timeLifeSeconds = 3f;
+        private DateTime _spawnDateTime;
+        protected Action<BulletData> _onDisable;
+
         protected virtual IMovementModule _movementModule { get; set; }
         
-        public virtual void Init(Action<GameObject, int> onTriggerEnter, BulletData bulletData)
+        public virtual void Init(Action<GameObject, int> onTriggerEnter, BulletData bulletData, Action<BulletData> onDisable)
         {
+            _onDisable = onDisable;
             _bulletData = bulletData;
             _onTriggerEnter = onTriggerEnter;
+            _spawnDateTime = DateTime.Now;
         }
 
         public virtual void Show()
@@ -28,6 +34,14 @@ namespace CosmoShip.Scripts.World.Views.Bullets
         public virtual void Hide()
         {
             gameObject.SetActive(false);
+        }
+        
+        public virtual void UpdateView(float deltaTime)
+        {
+            if (DateTime.Now.Subtract(_spawnDateTime).Seconds > _timeLifeSeconds)
+            {
+                _onDisable?.Invoke(BulletData);
+            }
         }
         
         public virtual void OnTriggerEnter2D(Collider2D col)

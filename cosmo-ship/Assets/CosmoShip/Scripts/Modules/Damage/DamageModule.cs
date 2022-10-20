@@ -21,12 +21,12 @@ namespace CosmoShip.Scripts.Modules.Damage
 
         public void DamageTaken(EntityData entityData, int Damage)
         {
-            entityData.OnDamage(Damage);
+            entityData.PutDamage(Damage);
         }
         
         public void DamageTaken(PlayerData playerData, int Damage)
         {
-            playerData.OnDamage(Damage);
+            playerData.PutDamage(Damage);
         }
     }
 }

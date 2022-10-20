@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CosmoShip.Scripts.ClientServices.RXExtension;
 using CosmoShip.Scripts.Models.Bullets;
 using CosmoShip.Scripts.World.Core.View;
@@ -14,10 +15,12 @@ namespace CosmoShip.Scripts.World.Views.Player
     {
         [SerializeField] private SpriteRenderer _iconPlayer;
      
-        private PlayerModel _model;
-        private DisposableList _disposableList = new DisposableList();
+        private Queue<BaseBulletView> _queueBulletView = new Queue<BaseBulletView>();
         private List<BaseBulletView> _bulletViews = new List<BaseBulletView>();
-
+        private PlayerModel _model;
+        
+        private DisposableList _disposableList = new DisposableList();
+        
         public override void Bind(PlayerModel model)
         {
             _model = model;
@@ -34,20 +37,6 @@ namespace CosmoShip.Scripts.World.Views.Player
                 }
             });
         }
-
-        public override void Show()
-        {
-            if(!IsShown){
-                Init(); 
-            }
-            base.Show();
-        }
-
-        public override void Hide()
-        {
-            Dispose();
-            base.Hide();
-        }
         
         private void Init()
         {
@@ -62,17 +51,60 @@ namespace CosmoShip.Scripts.World.Views.Player
             }).AddDispose(_disposableList);
             
             _model.OnShot += Shooting;
+            _model.UpdateModule.AddAction(Updatable);
+        }
+        
+        public override void Show()
+        {
+            if(!IsShown){
+                Init(); 
+            }
+            base.Show();
         }
 
+        public override void Hide()
+        {
+            Dispose();
+            base.Hide();
+        }
+
+        private void Updatable(float deltaTime)
+        {
+            foreach (var bulletView in _queueBulletView)
+            {
+                bulletView.UpdateView(deltaTime);
+            }
+        }
+        
         private void Shooting(BulletData bulletData)
         {     
             var bullet = PullBulletView(bulletData);
             bulletData.Init(transform.position, transform.rotation, 
                 (transform.rotation * Vector3.up).normalized);
-            bullet.Init(DamageTaken, bulletData);
+            bullet.Init(DamageTaken, bulletData, RemoveBullet);
             bullet.Show();
+            _queueBulletView.Enqueue(bullet);
         }
-
+        
+        private void RemoveBullet(BulletData bulletData)
+        {     
+            var bullet = _bulletViews.Find(v => v.BulletData == bulletData);
+            if (bullet != null)
+            {
+                _queueBulletView = new Queue<BaseBulletView>(_queueBulletView.Where(v => v != bullet));
+                bullet.Hide();
+            }
+        }
+        
+        private void RemoveAllBullet()
+        {
+            foreach (var bulletView in _bulletViews)
+            {
+                bulletView.Hide();
+            }
+            _queueBulletView = new Queue<BaseBulletView>();
+        }
+        
         private void DamageTaken(GameObject obj, int Damage)
         {
             var entityView = obj.GetComponent<BaseEntityView>();
@@ -110,6 +142,8 @@ namespace CosmoShip.Scripts.World.Views.Player
         {
             _model.OnShot -= Shooting;
             _disposableList.Dispose();
+            _model.UpdateModule.RemoveAction(Updatable);
+            RemoveAllBullet();
         }
     }
 }

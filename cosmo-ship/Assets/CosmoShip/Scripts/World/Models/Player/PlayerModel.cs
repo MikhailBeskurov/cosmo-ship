@@ -6,6 +6,7 @@ using CosmoShip.Scripts.Models.Entities;
 using CosmoShip.Scripts.Models.Player;
 using CosmoShip.Scripts.Modules.Damage;
 using CosmoShip.Scripts.Modules.Player;
+using CosmoShip.Scripts.Utils.Updatable;
 using CosmoShip.Scripts.World.Core.Model;
 using UnityEngine;
 
@@ -19,19 +20,22 @@ namespace CosmoShip.Scripts.World.Models.Player
         public IReadOnlyReactiveProperty<Vector2> PositionPlayer;
         public IReadOnlyReactiveProperty<Quaternion> RotationPlayer;
         public readonly PlayerData PlayerInit;
+        public readonly IUpdateModule UpdateModule;
         
         private IPlayerShootingModule _playerShootingModule;
         private IDamageModule _damageModule;
 
         private DisposableList _disposableList = new DisposableList();
-        
-        public PlayerModel(IPlayerModule playerModule, IPlayerShootingModule playerShootingModule, IDamageModule damageModule)
+
+        public PlayerModel(IPlayerModule playerModule, IPlayerMovementModule playerMovementModule,
+            IPlayerShootingModule playerShootingModule, IDamageModule damageModule, IUpdateModule updateModule)
         {
+            UpdateModule = updateModule;
             _damageModule = damageModule;
             _playerShootingModule = playerShootingModule;
             PlayerInit = playerModule.PlayerData;
-            PositionPlayer = playerModule.PositionPlayer;
-            RotationPlayer = playerModule.RotationPlayer;
+            PositionPlayer = playerMovementModule.PositionPlayer;
+            RotationPlayer = playerMovementModule.RotationPlayer;
             OnActivePlayer = playerModule.OnActivePlayer;
             _playerShootingModule.OnShot += Shooting;
         }

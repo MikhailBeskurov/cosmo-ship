@@ -17,11 +17,6 @@ namespace CosmoShip.Scripts.Modules.Scenes
     {
         private CancellationTokenSource cts;
 
-        private ScenesModule()
-        {
-            
-        }
-
         public async void LoadNewScene(ScenesData scenesData)
         {
             if (cts == null)

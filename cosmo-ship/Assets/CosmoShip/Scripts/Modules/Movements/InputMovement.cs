@@ -62,6 +62,11 @@ namespace CosmoShip.Scripts.Modules.Movements
             InertiaMovement(deltaTime);
         }
         
+        public void TeleportationToPoint(Vector2 position)
+        {
+            _position.Value = position;
+        }
+        
         private void InertiaMovement(float deltaTime)
         {
             Quaternion rotation = Quaternion.identity;

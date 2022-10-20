@@ -285,7 +285,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1897093569
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &333152982
@@ -457,9 +457,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ac8e826fb942b49596882ee41d29c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 76744659}
   _canvas: {fileID: 333152981}
   _updateModule: {fileID: 789235991}
-  _entitiesObjects: {fileID: 11400000, guid: fadb13204c5689e41aecb4569406849b, type: 2}
   _entitiesSettings: {fileID: 11400000, guid: cd3e37e933dba8548a18593459c498b7, type: 2}
   _playerSettings: {fileID: 11400000, guid: 321f5a58be66f6848a16553ba97240e5, type: 2}
   _bulletsSettings: {fileID: 11400000, guid: aad8ce6edcef9ee4480715656e1b80d6, type: 2}

@@ -7,10 +7,9 @@ using UnityEngine;
 
 namespace CosmoShip.Scripts.World.Views.Entities.Entity
 {
-    public class AsteroidView: BaseEntityView, IDisposable
+    public class AsteroidView: BaseEntityView
     {
         protected override IMovementModule _movementModule { get; set; }
-        private DisposableList _disposableList = new DisposableList();
         
         public override void Init(EntityData entityData)
         {
@@ -19,31 +18,22 @@ namespace CosmoShip.Scripts.World.Views.Entities.Entity
                 entityData.MoveSpeedEntity, new Vector3(0,0,-1),
                 entityData.RotationSpeedEntity);
             
-            _movementModule.Position.Subscribe(PositionChange).AddDispose(_disposableList);
-            _movementModule.Rotation.Subscribe(RotationChange).AddDispose(_disposableList);
+            _movementModule.Position.Subscribe(v =>
+            {
+                EntityInfo.SetCurrentPosition(v);
+                transform.position = v;
+            });
+            _movementModule.Rotation.Subscribe(v =>
+            {
+                transform.rotation = v;
+            });
+            _movementModule.TeleportationToPoint(entityData.CurrentPosition);
         }
 
         public override void UpdateView(float deltaTime)
         {
             base.UpdateView(deltaTime);
             _movementModule.Update(deltaTime);
-        }
-
-        private void PositionChange(Vector2 newPosition)
-        {
-            EntityInfo.SetCurrentPosition(newPosition);
-            transform.position = newPosition;
-        }
-        
-        private void RotationChange(Quaternion newRotation)
-        {
-            transform.rotation = newRotation;
-        }
-
-        public void Dispose()
-        {
-            Debug.Log("Dispose");
-            _disposableList.Dispose();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CosmoShip.Scripts.World.Views.Entities.Entity
     {
         public EntityData EntityInfo { get; private set; }
         protected virtual IMovementModule _movementModule { get; set; }
-        
+
         public virtual void Init(EntityData entityData)
         {
             EntityInfo = entityData;
@@ -28,7 +28,7 @@ namespace CosmoShip.Scripts.World.Views.Entities.Entity
         
         public virtual void UpdateView(float deltaTime)
         {
-           
+            
         }
     }
 }

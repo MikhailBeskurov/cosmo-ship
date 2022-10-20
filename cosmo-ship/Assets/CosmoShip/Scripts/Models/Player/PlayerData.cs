@@ -30,7 +30,7 @@ namespace CosmoShip.Scripts.Models.Player
             _onDestroy += onDestroy;
         }
         
-        public void OnDamage(int damage)
+        public void PutDamage(int damage)
         {
             _healtPoint.Value -= damage;
             if (_healtPoint.Value <= 0)
