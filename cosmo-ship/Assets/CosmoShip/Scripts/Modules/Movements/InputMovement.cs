@@ -7,9 +7,13 @@ namespace CosmoShip.Scripts.Modules.Movements
     {
         public IReadOnlyReactiveProperty<Vector2> Position => _position;
         public IReadOnlyReactiveProperty<Quaternion> Rotation => _rotation;
-        
+        public IReadOnlyReactiveProperty<float> InstantSpeed => _instantSpeed;
+        public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
+
         private ReactiveProperty<Vector2> _position = new ReactiveProperty<Vector2>();
         private ReactiveProperty<Quaternion> _rotation = new ReactiveProperty<Quaternion>();
+        private ReactiveProperty<float> _instantSpeed = new ReactiveProperty<float>();
+        private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
 
         private float _speedMovement;
         private float _speedRotation;
@@ -56,10 +60,14 @@ namespace CosmoShip.Scripts.Modules.Movements
 
         public void Update(float deltaTime)
         {  
+            var pastPosition = Position.Value;
              _rotation.Value = Quaternion.LerpUnclamped(_rotation.Value,
                  Quaternion.Euler(_rotation.Value.eulerAngles + _nextRotation.eulerAngles), deltaTime * _speedRotation);
           
             InertiaMovement(deltaTime);
+            
+            _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
+            _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
         }
         
         public void TeleportationToPoint(Vector2 position)

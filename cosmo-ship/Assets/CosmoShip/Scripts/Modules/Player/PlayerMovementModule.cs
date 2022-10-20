@@ -12,21 +12,26 @@ namespace CosmoShip.Scripts.Modules.Player
     {
         public IReadOnlyReactiveProperty<Vector2> PositionPlayer { get; }
         public IReadOnlyReactiveProperty<Quaternion> RotationPlayer { get; }
+        public IReadOnlyReactiveProperty<float> InstantSpeed { get; }
+        public IReadOnlyReactiveProperty<float> AngleRotation { get; }
     }
 
     public class PlayerMovementModule : IPlayerMovementModule, IDisposable
     {
         public IReadOnlyReactiveProperty<Vector2> PositionPlayer => _movementModule.Position;
         public IReadOnlyReactiveProperty<Quaternion> RotationPlayer => _movementModule.Rotation;
+        public IReadOnlyReactiveProperty<float> InstantSpeed => _movementModule.InstantSpeed;
+        public IReadOnlyReactiveProperty<float> AngleRotation => _movementModule.AngleRotation;
         
-        private readonly PlayerInputControls _playerInputControls;
         private ReactiveProperty<Vector2> _positionVelocity = new ReactiveProperty<Vector2>();
         private ReactiveProperty<Quaternion> _rotationVelocity = new ReactiveProperty<Quaternion>();
+
+        private readonly PlayerInputControls _playerInputControls;
         private IMovementModule _movementModule;
         private IUpdateModule _updateModule;
-        private BorderMapData _borderMapData;
         private IPlayerModule _playerModule;
-
+        private BorderMapData _borderMapData;
+        
         private DisposableList _disposableList = new DisposableList();
         
         public PlayerMovementModule(IPlayerModule playerModule, PlayerInputControls playerInputControls, 
@@ -109,6 +114,7 @@ namespace CosmoShip.Scripts.Modules.Player
         
         public void Dispose()
         {
+            _updateModule.RemoveAction(_movementModule.Update);
             _playerInputControls.Disable();
             _disposableList.Dispose();
         }

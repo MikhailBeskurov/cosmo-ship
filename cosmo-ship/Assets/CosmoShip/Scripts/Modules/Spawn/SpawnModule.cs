@@ -46,7 +46,7 @@ namespace CosmoShip.Scripts.Modules.Spawn
 
         public void StopSpawnAsteroids()
         {
-            if (_spawnAsteroids != null)
+            if (_spawnAsteroids != null && _spawnAsteroids.Status == TaskStatus.RanToCompletion)
             {
                 _spawnAsteroids.Dispose();
             }
@@ -61,7 +61,7 @@ namespace CosmoShip.Scripts.Modules.Spawn
 
         public void StopSpawnFlyingSaucer()
         {
-            if (_spawnFlyingSaucer != null)
+            if (_spawnFlyingSaucer != null && _spawnFlyingSaucer.Status == TaskStatus.RanToCompletion)
             {
                 _spawnFlyingSaucer.Dispose();
             }

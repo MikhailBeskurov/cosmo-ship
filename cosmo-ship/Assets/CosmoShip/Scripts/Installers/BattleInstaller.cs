@@ -13,6 +13,7 @@ using CosmoShip.Scripts.ScriptableObjects.Entities;
 using CosmoShip.Scripts.ScriptableObjects.Player;
 using CosmoShip.Scripts.UI.Core;
 using CosmoShip.Scripts.UI.Models.FinishGame;
+using CosmoShip.Scripts.UI.Models.PlayerInterface;
 using CosmoShip.Scripts.Utils.Updatable;
 using CosmoShip.Scripts.World.Core;
 using CosmoShip.Scripts.World.Models.Entities;
@@ -104,8 +105,10 @@ namespace CosmoShip.Scripts.Installers
         private void InitUI()
         {
             DiContainer.BindFromNew<FinishGameModel>();
+            DiContainer.BindFromNew<PlayerInterfaceModel>();
             
             _uiManager.BindAndHide(DiContainer.GetInstance<FinishGameModel>()); 
+            _uiManager.Bind(DiContainer.GetInstance<PlayerInterfaceModel>()); 
         }
         
         private void InitWorld()
