@@ -1,4 +1,5 @@
-﻿using CosmoShip.Scripts.UI.Models.PlayerInterface;
+﻿using System;
+using CosmoShip.Scripts.UI.Models.PlayerInterface;
 using GethererHeroes.Scripts.UI.Core.View;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace CosmoShip.Scripts.UI.Views.PlayerInterface
         [SerializeField] private TMP_Text _playerСoordinates;
         [SerializeField] private TMP_Text _instantSpeed;
         [SerializeField] private TMP_Text _playerRotationAngle;
+        [SerializeField] private TMP_Text _secondsToRecoverLaser;
+        [SerializeField] private TMP_Text _laserAttempts;
         
         public override void Bind(PlayerInterfaceModel model)
         {
@@ -29,6 +32,14 @@ namespace CosmoShip.Scripts.UI.Views.PlayerInterface
             model.PlayerScore.Subscribe(v =>
             {
                 _playerScore.text = $"Score: {v}";
+            });
+            model.SecondsToRecoverLaser.Subscribe(v =>
+            {
+                _secondsToRecoverLaser.text = $"Laser Recovery: {(int)v} sec.";
+            });
+            model.LaserAttempts.Subscribe(v =>
+            {
+                _laserAttempts.text = $"Laser Attempts: {v}";
             });
         }
     }

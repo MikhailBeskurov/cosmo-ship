@@ -6,6 +6,7 @@ using CosmoShip.Scripts.Models.Entities;
 using CosmoShip.Scripts.Models.Player;
 using CosmoShip.Scripts.Modules.Damage;
 using CosmoShip.Scripts.Modules.Player;
+using CosmoShip.Scripts.Modules.Player.Weapons;
 using CosmoShip.Scripts.Utils.Updatable;
 using CosmoShip.Scripts.World.Core.Model;
 using UnityEngine;
@@ -22,22 +23,26 @@ namespace CosmoShip.Scripts.World.Models.Player
         public readonly PlayerData PlayerInit;
         public readonly IUpdateModule UpdateModule;
         
-        private IPlayerShootingModule _playerShootingModule;
         private IDamageModule _damageModule;
-
+        private ILaserWeaponModule _laserWeaponModule;
+        private IBlasterWeaponModule _blasterWeaponModule;
+        
         private DisposableList _disposableList = new DisposableList();
 
-        public PlayerModel(IPlayerModule playerModule, IPlayerMovementModule playerMovementModule,
-            IPlayerShootingModule playerShootingModule, IDamageModule damageModule, IUpdateModule updateModule)
+        public PlayerModel(IPlayerModule playerModule, IPlayerMovementModule playerMovementModule, ILaserWeaponModule laserWeaponModule,
+            IBlasterWeaponModule blasterWeaponModule, IDamageModule damageModule, IUpdateModule updateModule)
         {
+            _blasterWeaponModule = blasterWeaponModule;
+            _laserWeaponModule = laserWeaponModule;
             UpdateModule = updateModule;
             _damageModule = damageModule;
-            _playerShootingModule = playerShootingModule;
             PlayerInit = playerModule.PlayerData;
             PositionPlayer = playerMovementModule.PositionPlayer;
             RotationPlayer = playerMovementModule.RotationPlayer;
             OnActivePlayer = playerModule.OnActivePlayer;
-            _playerShootingModule.OnShot += Shooting;
+            
+            _laserWeaponModule.OnShot += Shooting;
+            _blasterWeaponModule.OnShot += Shooting;
         }
         
         public void DamageTaken(EntityData entityData, int Damage)
@@ -56,8 +61,9 @@ namespace CosmoShip.Scripts.World.Models.Player
         }
 
         public void Dispose()
-        { 
-            _playerShootingModule.OnShot -= Shooting;
+        {          
+            _laserWeaponModule.OnShot -= Shooting;
+            _blasterWeaponModule.OnShot -= Shooting;
             _disposableList.Dispose();
         }
     }

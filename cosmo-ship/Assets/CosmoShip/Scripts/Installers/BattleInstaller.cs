@@ -6,6 +6,7 @@ using CosmoShip.Scripts.Modules.Damage;
 using CosmoShip.Scripts.Modules.Entities;
 using CosmoShip.Scripts.Modules.Gameplay;
 using CosmoShip.Scripts.Modules.Player;
+using CosmoShip.Scripts.Modules.Player.Weapons;
 using CosmoShip.Scripts.Modules.Scenes;
 using CosmoShip.Scripts.Modules.Spawn;
 using CosmoShip.Scripts.ScriptableObjects.Bullets;
@@ -85,7 +86,8 @@ namespace CosmoShip.Scripts.Installers
             DiContainer.BindFromNew<PlayerInputControls>();
             DiContainer.BindFromNew<PlayerMovementModule>();
             DiContainer.BindFromNew<PlayerModule>();
-            DiContainer.BindFromNew<PlayerShootingModule>();
+            DiContainer.BindFromNew<LaserWeaponModule>();
+            DiContainer.BindFromNew<BlasterWeaponModule>();
             DiContainer.BindFromNew<DamageModule>();
             DiContainer.BindFromNew<EntitiesModule>();
             DiContainer.BindFromNew<SpawnModule>();

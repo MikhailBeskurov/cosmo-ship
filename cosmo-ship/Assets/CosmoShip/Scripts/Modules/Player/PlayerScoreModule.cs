@@ -27,12 +27,7 @@ namespace CosmoShip.Scripts.Modules.Player
             _playerScoreData = playerScoreData;
             _gameplayModule = gameplayModule;
             _spawnModule = spawnModule;
-            
-            ScorePlayer.Subscribe(v =>
-            {
-                Debug.Log(v);
-            });
-            
+
             spawnModule.OnAddEntity += AddEntity;
             gameplayModule.OnGameOver += SaveMaxScore;
         }
@@ -46,7 +41,6 @@ namespace CosmoShip.Scripts.Modules.Player
         {
             if (_playerScoreData.GetMaxScore < ScorePlayer.Value)
             {
-                Debug.LogWarning("It's max score: " + ScorePlayer.Value);
                 _playerScoreData.GetMaxScore = ScorePlayer.Value;
             }
         }
