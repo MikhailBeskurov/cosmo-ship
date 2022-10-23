@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CosmoShip.Scripts.ClientServices.RXExtension;
+using CosmoShip.Scripts.Models;
 using CosmoShip.Scripts.Models.Bullets;
 using CosmoShip.Scripts.World.Core.View;
 using CosmoShip.Scripts.World.Models.Player;
@@ -113,7 +114,7 @@ namespace CosmoShip.Scripts.World.Views.Player
         
         private void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.CompareTag("Entity"))
+            if (col.CompareTag(EntitiesTag.Entity.ToString()))
             {
                 var entityView = col.GetComponent<BaseEntityView>();
                 if (entityView)

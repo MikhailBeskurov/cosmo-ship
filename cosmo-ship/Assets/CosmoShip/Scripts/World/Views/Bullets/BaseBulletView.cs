@@ -1,4 +1,5 @@
 ﻿using System;
+using CosmoShip.Scripts.Models;
 using CosmoShip.Scripts.Models.Bullets;
 using CosmoShip.Scripts.Modules.Movements;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace CosmoShip.Scripts.World.Views.Bullets
         
         public virtual void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.CompareTag("Entity"))
+            if (col.CompareTag(EntitiesTag.Entity.ToString()))
             {
                 _onTriggerEnter?.Invoke(col.gameObject, _bulletData.Damage);
             }

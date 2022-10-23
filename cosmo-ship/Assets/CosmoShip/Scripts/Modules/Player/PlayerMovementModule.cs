@@ -21,13 +21,13 @@ namespace CosmoShip.Scripts.Modules.Player
     {
         public IReadOnlyReactiveProperty<Vector2> PositionPlayer => _movementModule.Position;
         public IReadOnlyReactiveProperty<Quaternion> RotationPlayer => _movementModule.Rotation;
-        public IReadOnlyReactiveProperty<float> InstantSpeed => _istantSpeed;
+        public IReadOnlyReactiveProperty<float> InstantSpeed => _instantSpeed;
         public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
         
         private ReactiveProperty<Vector2> _positionVelocity = new ReactiveProperty<Vector2>();
         private ReactiveProperty<Quaternion> _rotationVelocity = new ReactiveProperty<Quaternion>();
 
-        private ReactiveProperty<float> _istantSpeed = new ReactiveProperty<float>();
+        private ReactiveProperty<float> _instantSpeed = new ReactiveProperty<float>();
         private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
         
         private readonly PlayerInputControls _playerInputControls;
@@ -58,12 +58,20 @@ namespace CosmoShip.Scripts.Modules.Player
                 ChechBorderMap(v);
             }).AddDispose(_disposableList);
 
-            _updateModule.AddAction(_movementModule.Update);
+            _updateModule.AddAction(Updatable);
             
             BindPositionInput();
             BindRotationInput();
         }
-        
+
+        private void Updatable(float deltaTime)
+        {
+            var pastPosition = PositionPlayer.Value;
+            _movementModule.Update(deltaTime);
+            _instantSpeed.Value = ((PositionPlayer.Value - pastPosition) / deltaTime).magnitude;
+            _angleRotation.Value = Quaternion.Angle(RotationPlayer.Value, Quaternion.Euler(Vector2.up));
+        }
+
         private void BindPositionInput()
         {
             _playerInputControls.SpaceShip.Move.performed += context =>
@@ -120,7 +128,7 @@ namespace CosmoShip.Scripts.Modules.Player
         
         public void Dispose()
         {
-            _updateModule.RemoveAction(_movementModule.Update);
+            _updateModule.RemoveAction(Updatable);
             _playerInputControls.Disable();
             _disposableList.Dispose();
         }

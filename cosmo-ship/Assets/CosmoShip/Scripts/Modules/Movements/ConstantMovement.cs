@@ -1,5 +1,4 @@
-﻿using CosmoShip.Scripts.Models;
-using CosmoShip.Scripts.Models.Movement;
+﻿using CosmoShip.Scripts.Models.Movement;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Movements

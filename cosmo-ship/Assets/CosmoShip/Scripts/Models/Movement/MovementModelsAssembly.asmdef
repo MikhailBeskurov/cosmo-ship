@@ -1,0 +1,16 @@
+{
+    "name": "MovementModelsAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:865daa79bb2727146bbb3ab34fdd0b3c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

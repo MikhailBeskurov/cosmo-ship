@@ -34,12 +34,8 @@ namespace CosmoShip.Scripts.Modules.Movements
 
         public override void Update(float deltaTime)
         {   
-            //var pastPosition = Position.Value;
             _velocityMovement = Rotation.Value * _directionMove;
             base.Update(deltaTime);
-            
-            // _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
-            // _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
         }
     }
 }
