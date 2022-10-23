@@ -7,13 +7,12 @@ namespace CosmoShip.Scripts.World.Views.Bullets
 {
     public class LaserBullet : BaseBulletView
     {
-        protected override IMovementModule _movementModule { get; set; }
+        protected override BaseMovementModule _movementModule { get; set; }
         public override void Init(Action<GameObject, int> onTriggerEnter, BulletData bulletData, Action<BulletData> onDisable)
         {
             base.Init(onTriggerEnter, bulletData, onDisable);
             
-            _movementModule = new ConstantMovement(bulletData.InitPosition, bulletData.InitRotation,bulletData.DirectionMove, 
-                bulletData.MoveSpeedBullet, Vector3.zero, 0);
+            _movementModule = new ConstantMovement(bulletData);
             
             _movementModule.Position.Subscribe(v =>
             {

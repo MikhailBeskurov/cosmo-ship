@@ -1,17 +1,15 @@
 ﻿using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.ScriptableObjects.Player;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace CosmoShip.Scripts.Models.Player
 {
-    public class PlayerData
-    {
-        public IReadOnlyReactiveProperty<int> HealtPoint => _healtPoint;
+    public class PlayerData : MovementData
+    { 
         public readonly Sprite IconPlayer;
-        public readonly float SpeedMovement;
-        public readonly float SpeedRotation;
-        public readonly float InertiaVelocity;
+        public IReadOnlyReactiveProperty<int> HealtPoint => _healtPoint;
 
         private ReactiveProperty<int> _healtPoint = new ReactiveProperty<int>();
         private event UnityAction _onDestroy;
@@ -19,10 +17,8 @@ namespace CosmoShip.Scripts.Models.Player
         public PlayerData(PlayerSettings playerSettings)
         {
             IconPlayer = playerSettings.IconPlayer;
-            SpeedMovement = playerSettings.SpeedMovement;
-            SpeedRotation = playerSettings.SpeedRotation;
-            InertiaVelocity = playerSettings.InertiaVelocity;
             _healtPoint.Value = playerSettings.HealtPoint;
+            InitSettingsMovement(playerSettings.MovementSettings);
         }
         
         public void OnDestroy(UnityAction onDestroy)

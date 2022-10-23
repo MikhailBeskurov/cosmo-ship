@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace GethererHeroes.Scripts.UI.Core.View
+namespace CosmoShip.Scripts.UI.Core.View
 {
     public abstract class AbstractScreen : MonoBehaviour, IScreen
     {

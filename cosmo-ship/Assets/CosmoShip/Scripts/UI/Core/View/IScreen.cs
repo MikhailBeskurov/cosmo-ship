@@ -1,6 +1,6 @@
 ﻿using CosmoShip.Scripts.UI.Core.Model;
 
-namespace GethererHeroes.Scripts.UI.Core.View
+namespace CosmoShip.Scripts.UI.Core.View
 {
     public interface IScreen
     {

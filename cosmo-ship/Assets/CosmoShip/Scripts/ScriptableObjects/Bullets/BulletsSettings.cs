@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CosmoShip.Scripts.Models.Bullets;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.World.Views.Bullets;
 using UnityEngine;
 
@@ -11,9 +12,9 @@ namespace CosmoShip.Scripts.ScriptableObjects.Bullets
     {
         [SerializeField] private List<BulletSettingsData> _bullets = new List<BulletSettingsData>();
         
-        public BulletData GetBulletData(BulletTypes bulletType)
+        public BulletSettingsData GetBulletSettings(BulletTypes bulletType)
         {
-            return new BulletData(_bullets.Find(v => v.BulletType == bulletType));
+            return _bullets.Find(v => v.BulletType == bulletType);
         }
     }
     
@@ -23,6 +24,6 @@ namespace CosmoShip.Scripts.ScriptableObjects.Bullets
         public BaseBulletView BulletView;
         public BulletTypes BulletType;
         public int Damage = 1;
-        public float MoveSpeedBullet = 5f;
+        public MovementSettings MovementSettings;
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using CosmoShip.Scripts.Models.Movement;
+using UnityEngine;
 
 namespace CosmoShip.Scripts.ScriptableObjects.Player
 {
@@ -7,8 +8,6 @@ namespace CosmoShip.Scripts.ScriptableObjects.Player
     {
         public Sprite IconPlayer;
         public int HealtPoint = 1;
-        public float SpeedMovement = 20;
-        public float SpeedRotation = 20;
-        public float InertiaVelocity = 0.6f;
+        public MovementSettings MovementSettings;
     }
 }

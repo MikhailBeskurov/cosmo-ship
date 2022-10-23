@@ -1,6 +1,6 @@
 ﻿using System;
+using CosmoShip.Scripts.UI.Core.View;
 using CosmoShip.Scripts.UI.Models.PlayerInterface;
-using GethererHeroes.Scripts.UI.Core.View;
 using TMPro;
 using UnityEngine;
 

@@ -2,6 +2,7 @@
 using CosmoShip.Scripts.ClientServices.RXExtension;
 using CosmoShip.Scripts.ClientServices.RXExtension.Property;
 using CosmoShip.Scripts.Models.BorderMap;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.Modules.Movements;
 using CosmoShip.Scripts.Utils.Updatable;
 using UnityEngine;
@@ -20,14 +21,17 @@ namespace CosmoShip.Scripts.Modules.Player
     {
         public IReadOnlyReactiveProperty<Vector2> PositionPlayer => _movementModule.Position;
         public IReadOnlyReactiveProperty<Quaternion> RotationPlayer => _movementModule.Rotation;
-        public IReadOnlyReactiveProperty<float> InstantSpeed => _movementModule.InstantSpeed;
-        public IReadOnlyReactiveProperty<float> AngleRotation => _movementModule.AngleRotation;
+        public IReadOnlyReactiveProperty<float> InstantSpeed => _istantSpeed;
+        public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
         
         private ReactiveProperty<Vector2> _positionVelocity = new ReactiveProperty<Vector2>();
         private ReactiveProperty<Quaternion> _rotationVelocity = new ReactiveProperty<Quaternion>();
 
+        private ReactiveProperty<float> _istantSpeed = new ReactiveProperty<float>();
+        private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
+        
         private readonly PlayerInputControls _playerInputControls;
-        private IMovementModule _movementModule;
+        private BaseMovementModule _movementModule;
         private IUpdateModule _updateModule;
         private IPlayerModule _playerModule;
         private BorderMapData _borderMapData;
@@ -47,10 +51,12 @@ namespace CosmoShip.Scripts.Modules.Player
         
         private void Init()
         {
-            _movementModule = new InputMovement(_positionVelocity, _rotationVelocity, _playerModule.PlayerData.SpeedMovement,
-                _playerModule.PlayerData.SpeedRotation,_playerModule.PlayerData.InertiaVelocity);
-            
-            _movementModule.Position.Subscribe(ChechBorderMap).AddDispose(_disposableList);
+            _movementModule = new InputMovement(_playerModule.PlayerData.InitMovement(Vector2.zero, Quaternion.identity, 
+                _positionVelocity, _rotationVelocity));
+            _movementModule.Position.Subscribe(v =>
+            {
+                ChechBorderMap(v);
+            }).AddDispose(_disposableList);
 
             _updateModule.AddAction(_movementModule.Update);
             
@@ -108,7 +114,7 @@ namespace CosmoShip.Scripts.Modules.Player
 
             if (newPosition != position)
             {
-                _movementModule.TeleportationToPoint(newPosition);
+                _movementModule.PositionTo(newPosition);
             }
         }
         

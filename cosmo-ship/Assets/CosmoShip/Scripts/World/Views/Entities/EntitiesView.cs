@@ -67,8 +67,8 @@ namespace CosmoShip.Scripts.World.Views.Entities
                                                 && v.EntityInfo.TypeEntity == entityData.TypeEntity);
             if (entity == null)
             {
-                entity = Instantiate(_model.GetEntityObject(entityData.TypeEntity), entityData.CurrentPosition,
-                    Quaternion.identity);
+                entity = Instantiate(_model.GetEntityObject(entityData.TypeEntity), 
+                    entityData.CurrentPosition, Quaternion.identity);
                 _entityViews.Add(entity);
             }
             

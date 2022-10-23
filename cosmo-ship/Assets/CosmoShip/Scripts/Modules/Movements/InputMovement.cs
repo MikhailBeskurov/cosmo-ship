@@ -1,97 +1,45 @@
-﻿using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+﻿using CosmoShip.Scripts.Models.Movement;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Movements
 {
-    public class InputMovement : IMovementModule
+    public class InputMovement : BaseMovementModule
     {
-        public IReadOnlyReactiveProperty<Vector2> Position => _position;
-        public IReadOnlyReactiveProperty<Quaternion> Rotation => _rotation;
-        public IReadOnlyReactiveProperty<float> InstantSpeed => _instantSpeed;
-        public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
-
-        private ReactiveProperty<Vector2> _position = new ReactiveProperty<Vector2>();
-        private ReactiveProperty<Quaternion> _rotation = new ReactiveProperty<Quaternion>();
-        private ReactiveProperty<float> _instantSpeed = new ReactiveProperty<float>();
-        private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
-
-        private float _speedMovement;
-        private float _speedRotation;
-        private float _inertiaVelocity;
-        private float _smoothInputSpeed = 0.5f;
+        public override Vector2 VelocityMovement => _velocityMovement;
         
-        private Vector2 _inputMoveVector = Vector2.zero;
-        private Quaternion _nextRotation = Quaternion.identity;
+        private Vector2 _velocityMovement;
         
-        private Vector2 _currentInputVector = Vector2.zero;
-        private Vector2 _smoothInputVelocity = Vector2.zero;
-
-        private Vector2 _currentInertiaVector = Vector2.zero;
-        private Vector2 _smoothInertiaVelocity = Vector2.zero;
         
-        private bool _dragg = false;
-        
-        public InputMovement(IReadOnlyReactiveProperty<Vector2> positionPlayer, 
-            IReadOnlyReactiveProperty<Quaternion> rotationPlayer, float speedMovement, float speedRotation, float inertiaVelocity = 0)
+        public InputMovement(IMovementData baseMovementData)
         {
-            _speedMovement = speedMovement;
-            _speedRotation = speedRotation;
-            _inertiaVelocity = inertiaVelocity;
+            _position.Value = baseMovementData.CurrentPosition;
+            _rotation.Value = baseMovementData.CurrentRotation;
             
-            positionPlayer.Subscribe(v =>
+            _speedMovement = baseMovementData.SpeedMovement;
+            _speedRotation = baseMovementData.SpeedRotation;
+            
+            _inertiaVelocity = baseMovementData.InertiaSpeed;
+            _smoothVelocity = baseMovementData.SmoothVelocity;
+            
+            baseMovementData.DirectionMove.Subscribe(v =>
             {
-                if (v == Vector2.zero)
-                {
-                    _dragg = false;
-                    _currentInputVector = Vector2.zero;
-                    _smoothInputVelocity = Vector2.zero;
-                }
-                else
-                {
-                    _dragg = true;
-                }
-                _inputMoveVector = v;
+                _directionMove = v;
             });
-            rotationPlayer.Subscribe(v =>
+            
+            baseMovementData.DirectionRotation.Subscribe(v =>
             {
-                _nextRotation = v;
+                _directionRotation = v;
             });
         }
 
-        public void Update(float deltaTime)
-        {  
-            var pastPosition = Position.Value;
-             _rotation.Value = Quaternion.LerpUnclamped(_rotation.Value,
-                 Quaternion.Euler(_rotation.Value.eulerAngles + _nextRotation.eulerAngles), deltaTime * _speedRotation);
-          
-            InertiaMovement(deltaTime);
+        public override void Update(float deltaTime)
+        {   
+            //var pastPosition = Position.Value;
+            _velocityMovement = Rotation.Value * _directionMove;
+            base.Update(deltaTime);
             
-            _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
-            _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
-        }
-        
-        public void TeleportationToPoint(Vector2 position)
-        {
-            _position.Value = position;
-        }
-        
-        private void InertiaMovement(float deltaTime)
-        {
-            Quaternion rotation = Quaternion.identity;
-            
-            if (_dragg)
-            { 
-                rotation = Rotation.Value;
-                _currentInputVector = Vector2.SmoothDamp(_currentInputVector, _inputMoveVector,
-                    ref _smoothInputVelocity, _smoothInputSpeed);
-            }
-            
-            var positionNextStep = (Vector2)(rotation * _currentInputVector);
-            var inertiaNextStep = rotation * _currentInputVector * _inertiaVelocity;
-
-            _currentInertiaVector = Vector2.Lerp(_currentInertiaVector, inertiaNextStep, deltaTime);
-            _position.Value = Vector2.Lerp(Position.Value, Position.Value + positionNextStep + _currentInertiaVector, 
-                deltaTime * _speedMovement);
+            // _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
+            // _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
         }
     }
 }

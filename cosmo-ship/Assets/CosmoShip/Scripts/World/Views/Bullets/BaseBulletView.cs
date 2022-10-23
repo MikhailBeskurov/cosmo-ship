@@ -16,9 +16,10 @@ namespace CosmoShip.Scripts.World.Views.Bullets
         private DateTime _spawnDateTime;
         protected Action<BulletData> _onDisable;
 
-        protected virtual IMovementModule _movementModule { get; set; }
+        protected virtual BaseMovementModule _movementModule { get; set; }
         
-        public virtual void Init(Action<GameObject, int> onTriggerEnter, BulletData bulletData, Action<BulletData> onDisable)
+        public virtual void Init(Action<GameObject, int> onTriggerEnter, BulletData bulletData, 
+            Action<BulletData> onDisable)
         {
             _onDisable = onDisable;
             _bulletData = bulletData;

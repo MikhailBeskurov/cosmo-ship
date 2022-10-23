@@ -1,52 +1,34 @@
-﻿using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+﻿using CosmoShip.Scripts.Models;
+using CosmoShip.Scripts.Models.Movement;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Movements
 {
-    public class ConstantMovement : IMovementModule
+    public class ConstantMovement : BaseMovementModule
     {
-        public IReadOnlyReactiveProperty<Vector2> Position => _position;
-        public IReadOnlyReactiveProperty<Quaternion> Rotation => _rotation;
-        public IReadOnlyReactiveProperty<float> InstantSpeed => _instantSpeed;
-        public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
-
-        private ReactiveProperty<Vector2> _position = new ReactiveProperty<Vector2>();
-        private ReactiveProperty<Quaternion> _rotation = new ReactiveProperty<Quaternion>();
-        private ReactiveProperty<float> _instantSpeed = new ReactiveProperty<float>();
-        private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
+        public override Vector2 VelocityMovement => _velocityMovement;
         
-        private Vector2 _directionMove;
-        private Vector3 _directionRotation;
-
-        private float _speedMove;
-        private float _speedRotation;
+        private Vector2 _velocityMovement;
         
-        public ConstantMovement(Vector2 positionInit, Quaternion rotationInit, Vector2 directionMove, float speedMove,
-            Vector3 directionRotation, float speedRotation)
+        public ConstantMovement(IMovementData baseMovementData)
         {
-            _position.Value = positionInit;
-            _rotation.Value = rotationInit;
-            _directionMove = directionMove;
-            _directionRotation = directionRotation;
-            _speedMove = speedMove;
-            _speedRotation = speedRotation;
+            _position.Value = baseMovementData.CurrentPosition;
+            _rotation.Value = baseMovementData.CurrentRotation;
+            
+            _directionMove = baseMovementData.DirectionMove.Value;
+            _directionRotation = baseMovementData.DirectionRotation.Value;
+            
+            _inertiaVelocity = baseMovementData.InertiaSpeed;
+            _smoothVelocity = baseMovementData.SmoothVelocity;
+            
+            _speedMovement = baseMovementData.SpeedMovement;
+            _speedRotation = baseMovementData.SpeedRotation;
         }
 
-        public void Update(float deltaTime)
+        public override void Update(float deltaTime)
         {
-            var pastPosition = Position.Value;
-            
-            _position.Value = Vector2.Lerp(Position.Value, Position.Value + _directionMove, deltaTime * _speedMove);
-            _rotation.Value = Quaternion.Lerp(Rotation.Value, 
-                Quaternion.Euler(Rotation.Value.eulerAngles + _directionRotation), deltaTime * _speedRotation);
-            
-            _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
-            _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
-        }
-
-        public void TeleportationToPoint(Vector2 position)
-        {
-            _position.Value = position;
+            _velocityMovement = _directionMove;
+            base.Update(deltaTime);
         }
     }
 }

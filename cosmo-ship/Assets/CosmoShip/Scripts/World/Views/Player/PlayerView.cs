@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CosmoShip.Scripts.ClientServices.RXExtension;
 using CosmoShip.Scripts.Models.Bullets;
@@ -79,8 +78,6 @@ namespace CosmoShip.Scripts.World.Views.Player
         private void Shooting(BulletData bulletData)
         {     
             var bullet = PullBulletView(bulletData);
-            bulletData.Init(transform.position, transform.rotation, 
-                (transform.rotation * Vector3.up).normalized);
             bullet.Init(DamageTaken, bulletData, RemoveBullet);
             bullet.Show();
             _queueBulletView.Enqueue(bullet);

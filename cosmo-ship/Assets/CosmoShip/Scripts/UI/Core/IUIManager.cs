@@ -1,5 +1,5 @@
 ﻿using CosmoShip.Scripts.UI.Core.Model;
-using GethererHeroes.Scripts.UI.Core.View;
+using CosmoShip.Scripts.UI.Core.View;
 
 namespace CosmoShip.Scripts.UI.Core
 {

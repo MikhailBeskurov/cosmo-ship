@@ -1,5 +1,5 @@
-﻿using CosmoShip.Scripts.UI.Models.MainMenu;
-using GethererHeroes.Scripts.UI.Core.View;
+﻿using CosmoShip.Scripts.UI.Core.View;
+using CosmoShip.Scripts.UI.Models.MainMenu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

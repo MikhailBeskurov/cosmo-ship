@@ -2,8 +2,7 @@
 using System.Linq;
 using CosmoShip.Scripts.ClientServices;
 using CosmoShip.Scripts.UI.Core.Model;
-using GethererHeroes.Scripts.UI.Core;
-using GethererHeroes.Scripts.UI.Core.View;
+using CosmoShip.Scripts.UI.Core.View;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.UI.Core

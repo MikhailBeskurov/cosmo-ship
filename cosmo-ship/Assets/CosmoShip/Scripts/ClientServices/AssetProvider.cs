@@ -1,7 +1,7 @@
 ﻿using CosmoShip.Scripts.UI.Core.Model;
+using CosmoShip.Scripts.UI.Core.View;
 using CosmoShip.Scripts.World.Core.Model;
 using CosmoShip.Scripts.World.Core.View;
-using GethererHeroes.Scripts.UI.Core.View;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.ClientServices

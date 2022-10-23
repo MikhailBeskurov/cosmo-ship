@@ -99,16 +99,18 @@ namespace CosmoShip.Scripts.Modules.Spawn
         
         private void SpawnBigAsteroids(Vector2 baseInitPosition, Vector2 baseDirectionMove)
         {
-            var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.BigAsteroid), baseInitPosition,
-                baseDirectionMove);
+            var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.BigAsteroid));
+            entity.InitMovement(baseInitPosition, Quaternion.identity, 
+                baseDirectionMove, Quaternion.Euler(0,0,-1));
             entity.OnDestroy(() => SpawnMediumAsteroids(entity.CurrentPosition, baseDirectionMove));
             OnAddEntity?.Invoke(entity);
         }
         
         private void SpawnMediumAsteroids(Vector2 baseInitPosition, Vector2 baseDirectionMove)
         {
-            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.MediumAsteroid), baseInitPosition,
-                  baseDirectionMove);
+            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.MediumAsteroid));
+            entity.InitMovement(baseInitPosition,  Quaternion.identity, 
+                baseDirectionMove, Quaternion.Euler(0,0,-1));
             entity.OnDestroy(() => SpawnSmallAsteroids(entity.CurrentPosition, baseDirectionMove));
             OnAddEntity?.Invoke(entity);
         }
@@ -120,21 +122,22 @@ namespace CosmoShip.Scripts.Modules.Spawn
             
             for (int i = 1; i <= count; i++)
             { 
-                int charValue = i % 2 == 0 ? -1 : 0;
+                int charValue = (i % 2 == 0) ? -1 : 1;
                 var directionMove = Quaternion.AngleAxis(charValue * angel, Vector3.forward) * baseDirectionMove;
-                var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.SmallAsteroid), baseInitPosition,
-                    directionMove);
+                
+                var entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.SmallAsteroid));
+                entity.InitMovement(baseInitPosition,  Quaternion.identity, 
+                    directionMove, Quaternion.Euler(0,0,-1));
                 OnAddEntity?.Invoke(entity);
             }
         }
         
-        private EntityData SpawnFlyingSaucer(Vector2 baseInitPosition)
+        private void SpawnFlyingSaucer(Vector2 baseInitPosition)
         {
-            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.FlyingSauce), baseInitPosition,
-                _playerMovementModule.PositionPlayer.Value);
-            entity.SubscribeDirectionMove(_playerMovementModule.PositionPlayer);
+            EntityData entity = new EntityData(_entitiesSettings.GetEntitySettings(EntityType.FlyingSauce));
+            entity.InitMovement(baseInitPosition,  Quaternion.identity, 
+                _playerMovementModule.PositionPlayer, Quaternion.Euler(0,0,-1));
             OnAddEntity?.Invoke(entity);
-            return entity;
         }
         
         private Vector2 GetInitPosition()

@@ -1,72 +1,51 @@
 ﻿using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+using CosmoShip.Scripts.Models.Movement;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Movements
 {
-    public class PathfinderMovement : IMovementModule
+    public class PathfinderMovement : BaseMovementModule
     {
-        public IReadOnlyReactiveProperty<Vector2> Position => _position;
-        public IReadOnlyReactiveProperty<Quaternion> Rotation => _rotation;
-        public IReadOnlyReactiveProperty<float> InstantSpeed => _instantSpeed;
-        public IReadOnlyReactiveProperty<float> AngleRotation => _angleRotation;
-
-        private ReactiveProperty<Vector2> _position = new ReactiveProperty<Vector2>();
-        private ReactiveProperty<Quaternion> _rotation = new ReactiveProperty<Quaternion>();
-        private ReactiveProperty<float> _instantSpeed = new ReactiveProperty<float>();
-        private ReactiveProperty<float> _angleRotation = new ReactiveProperty<float>();
-
-        private float _movementSpeed;
+        public override Vector2 VelocityMovement => _velocityMovement;
         
+        private Vector2 _velocityMovement;
+
         private int _raycastCount = 12;
-        private float _maxSeeAhead = 5f;
+        private float _maxSeeAhead = 7f;
         private float _angleAhead = 135f;
         
         private Vector2 _ahead;
         private Vector2 _directionMove;
         private int _hashCode;
         
-        public PathfinderMovement(Vector2 positionInit, Quaternion rotationInit, 
-            Vector2 directionMove, float movementSpeed, int hashCode)
+        public PathfinderMovement(IMovementData baseMovementData, int hashCode)
         {
-            _movementSpeed = movementSpeed;
-            _directionMove = directionMove;
-            _position.Value = positionInit;
-            _rotation.Value = rotationInit;
-            _hashCode = hashCode;
-        }
-        
-        public PathfinderMovement(Vector2 positionInit, Quaternion rotationInit, 
-            IReadOnlyReactiveProperty<Vector2> positionTarget, float movementSpeed, int hashCode)
-        {
-            positionTarget.Subscribe(v =>
+            _position.Value = baseMovementData.CurrentPosition;
+            _rotation.Value = baseMovementData.CurrentRotation;
+
+            baseMovementData.DirectionMove.Subscribe(v =>
             {
                 _directionMove = (v - Position.Value).normalized;
             });
+           
+            _directionRotation = baseMovementData.DirectionRotation.Value;
             
-            _movementSpeed = movementSpeed;
-            _position.Value = positionInit;
-            _rotation.Value = rotationInit;
+            _speedMovement = baseMovementData.SpeedMovement;
+            _speedRotation = baseMovementData.SpeedRotation;
+            
+            _inertiaVelocity = baseMovementData.InertiaSpeed;
+            _smoothVelocity = baseMovementData.SmoothVelocity;
+            
             _hashCode = hashCode;
         }
-        
-        public void Update(float deltaTime)
+
+        public override void Update(float deltaTime)
         {
-            var pastPosition = Position.Value;
-            
             _ahead = collisionAvoidance();
-            Vector2 nextStepPos = _ahead.magnitude > 0 ? _ahead : _directionMove;
-            _position.Value = Vector2.Lerp(Position.Value, Position.Value  + nextStepPos,
-                deltaTime * _movementSpeed);
-            
-            _instantSpeed.Value = ((Position.Value - pastPosition) / deltaTime).magnitude;
-            _angleRotation.Value = Quaternion.Angle(Rotation.Value, Quaternion.Euler(Vector2.up));
+            _velocityMovement = _ahead.magnitude > 0 ? _ahead : _directionMove;
+            base.Update(deltaTime);
         }
-        
-        public void TeleportationToPoint(Vector2 position)
-        {
-            _position.Value = position;
-        }
-        
+
         private Vector2 collisionAvoidance()
         {
             Vector2 sumDir = Vector2.zero;
@@ -75,7 +54,6 @@ namespace CosmoShip.Scripts.Modules.Movements
             {
                 sumDir += findMostThreateningObstacle((360/_raycastCount) * i);
             }
-          
             return sumDir;
         }
         
@@ -84,9 +62,6 @@ namespace CosmoShip.Scripts.Modules.Movements
             var dir = GetDirection(angle);
             var hit = Physics2D.RaycastAll(Position.Value, dir, _maxSeeAhead);
 
-            // Debug.DrawRay(Position.Value, (Vector2) dir * _maxSeeAhead,
-            //     new Color(1f, 0.02f, 0f));
-            
             foreach (var hit2D in hit)
             {
                 if (hit2D.collider != null &&  hit2D.collider.gameObject.GetHashCode() != _hashCode && 

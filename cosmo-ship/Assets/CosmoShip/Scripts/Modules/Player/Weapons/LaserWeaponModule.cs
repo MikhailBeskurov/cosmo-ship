@@ -1,8 +1,10 @@
 ﻿using System;
 using CosmoShip.Scripts.ClientServices.RXExtension.Property;
 using CosmoShip.Scripts.Models.Bullets;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.ScriptableObjects.Bullets;
 using CosmoShip.Scripts.Utils.Updatable;
+using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Player.Weapons
 {
@@ -29,11 +31,13 @@ namespace CosmoShip.Scripts.Modules.Player.Weapons
         private DateTime _lastLaserShot;
         private float _laserResetDuratuion = 5f;
         private IUpdateModule _updateModule;
+        private readonly IPlayerMovementModule _playerMovementModule;
 
         public LaserWeaponModule(PlayerInputControls playerInputControls, BulletsSettings bulletsSettings, 
-            IUpdateModule updateModule)
+            IUpdateModule updateModule, IPlayerMovementModule playerMovementModule)
         {
             _updateModule = updateModule;
+            _playerMovementModule = playerMovementModule;
             _bulletsSettings = bulletsSettings;
             _playerInputControls = playerInputControls;
             updateModule.AddAction(Updatable);
@@ -73,7 +77,10 @@ namespace CosmoShip.Scripts.Modules.Player.Weapons
             if (_laserAttempts.Value > 0)
             {
                 _laserAttempts.Value--;
-                OnShot?.Invoke(_bulletsSettings.GetBulletData(bulletType));
+                var bullet = new BulletData(_bulletsSettings.GetBulletSettings(bulletType));
+                bullet.InitMovement(_playerMovementModule.PositionPlayer.Value, _playerMovementModule.RotationPlayer.Value,
+                    (_playerMovementModule.RotationPlayer.Value * Vector3.up).normalized, Quaternion.identity);
+                OnShot?.Invoke(bullet);
             }
         }
 

@@ -1,8 +1,5 @@
-﻿using System;
-using CosmoShip.Scripts.Models.Entities;
+﻿using CosmoShip.Scripts.Models.Entities;
 using CosmoShip.Scripts.Models.Player;
-using CosmoShip.Scripts.Modules.Entities;
-using UnityEngine;
 
 namespace CosmoShip.Scripts.Modules.Damage
 {

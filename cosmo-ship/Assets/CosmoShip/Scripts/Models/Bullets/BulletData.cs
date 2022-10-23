@@ -1,37 +1,28 @@
-﻿using CosmoShip.Scripts.ScriptableObjects.Bullets;
+﻿using System.Collections.Generic;
+using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+using CosmoShip.Scripts.Models.Movement;
+using CosmoShip.Scripts.ScriptableObjects.Bullets;
 using CosmoShip.Scripts.World.Views.Bullets;
 using UnityEngine;
 
 namespace CosmoShip.Scripts.Models.Bullets
 {
-    public class BulletData
+    public class BulletData : MovementData
     {
-        public readonly BaseBulletView BulletView;
-        public readonly BulletTypes BulletType;
-        public readonly int Damage;
-        public readonly float MoveSpeedBullet;
+        public BaseBulletView BulletView => _bulletView;
+        public BulletTypes BulletType => _bulletType;
+        public int Damage => _damage;
         
-        public Vector2 InitPosition => _initPosition;
-        public Quaternion InitRotation => _initRotation;
-        public Vector2 DirectionMove => _directionMove;
-        
-        private Vector2 _initPosition;
-        private Quaternion _initRotation;
-        private Vector2 _directionMove;
+        private BaseBulletView _bulletView;
+        private BulletTypes _bulletType;
+        private int _damage;
         
         public BulletData(BulletSettingsData bulletsSettings)
         {
-            BulletView = bulletsSettings.BulletView;
-            BulletType = bulletsSettings.BulletType;
-            Damage = bulletsSettings.Damage;
-            MoveSpeedBullet = bulletsSettings.MoveSpeedBullet;
-        }
-        
-        public void Init(Vector2 initPosition, Quaternion initRotation, Vector2 directionMove)
-        {
-            _initPosition = initPosition;
-            _initRotation = initRotation;
-            _directionMove = directionMove;
+            _bulletView = bulletsSettings.BulletView;
+            _bulletType = bulletsSettings.BulletType;
+            _damage = bulletsSettings.Damage;
+            InitSettingsMovement(bulletsSettings.MovementSettings);
         }
     }
 }

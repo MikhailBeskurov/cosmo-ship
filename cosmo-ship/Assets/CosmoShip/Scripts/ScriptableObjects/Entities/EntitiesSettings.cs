@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CosmoShip.Scripts.Models.Entities;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.World.Views.Entities.Entity;
 using UnityEngine;
 
@@ -27,16 +28,9 @@ namespace CosmoShip.Scripts.ScriptableObjects.Entities
     {
         public EntityType EntityType;
         public BaseEntityView EntityView;
-        
-        [Space]
-        
         public int HealtsPoints = 1;
         public int ScoreOnDestroy = 0;
         public int Damage = 1;
-        
-        [Space]
-        
-        public float MoveSpeedEntity = 5f;
-        public float RotationSpeedEntity = 10f;
+        public MovementSettings MovementSettings;
     }
 }

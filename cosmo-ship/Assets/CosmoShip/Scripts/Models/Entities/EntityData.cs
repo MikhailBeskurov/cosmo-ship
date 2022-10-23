@@ -1,42 +1,33 @@
-﻿using CosmoShip.Scripts.ClientServices.RXExtension;
-using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+﻿using CosmoShip.Scripts.ClientServices.RXExtension.Property;
+using CosmoShip.Scripts.Models.Movement;
 using CosmoShip.Scripts.ScriptableObjects.Entities;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace CosmoShip.Scripts.Models.Entities
 {
-    public class EntityData
+    public class EntityData : MovementData
     {
-        public readonly EntityType TypeEntity;
-        public readonly int Damage;
-        public readonly int ScoreOnDestroy;
-        public readonly float MoveSpeedEntity;
-        public readonly float RotationSpeedEntity;
-        
-        public IReadOnlyReactiveProperty<Vector2> DirectionMove => _directionMove;
+        public EntityType TypeEntity => _typeEntity;
         public int HealtPoints => _healtPoints;
-        public Vector2 CurrentPosition => _currentPosition;
-        
+        public int ScoreOnDestroy => _scoreOnDestroy;
+        public int Damage => _damage;
+
+        private EntityType _typeEntity;
         private int _healtPoints;
-        private Vector2 _currentPosition;
-        private ReactiveProperty<Vector2> _directionMove = new ReactiveProperty<Vector2>();
+        private int _scoreOnDestroy;
+        private int _damage;
         private event UnityAction _onDestroy;
         
-        private DisposableList _disposableList = new DisposableList();
-        
-        public EntityData(EntitiesSettingsData settingsData, Vector2 currentPosition, Vector2 directionMove)
+        public EntityData(EntitiesSettingsData settingsData)
         {
-            TypeEntity = settingsData.EntityType;
+            _typeEntity = settingsData.EntityType;
             _healtPoints = settingsData.HealtsPoints;
-            Damage = settingsData.Damage;
-            MoveSpeedEntity = settingsData.MoveSpeedEntity;
-            RotationSpeedEntity = settingsData.RotationSpeedEntity;
-            _currentPosition = currentPosition;
-            _directionMove.Value = directionMove;
-            ScoreOnDestroy = settingsData.ScoreOnDestroy;
+            _damage = settingsData.Damage;
+            _scoreOnDestroy = settingsData.ScoreOnDestroy;
+            InitSettingsMovement(settingsData.MovementSettings);
         }
-
+        
         public void OnDestroy(UnityAction onDestroy)
         {
             _onDestroy += onDestroy;
@@ -49,20 +40,6 @@ namespace CosmoShip.Scripts.Models.Entities
             {
                 _onDestroy?.Invoke();
             }
-        }
-
-        public void SubscribeDirectionMove(IReadOnlyReactiveProperty<Vector2> reactiveMove)
-        {
-            _disposableList.Dispose();
-            reactiveMove.Subscribe(v =>
-            {
-                _directionMove.Value = v;
-            }).AddDispose(_disposableList);
-        }
-        
-        public void SetCurrentPosition(Vector2 newPosition)
-        {
-            _currentPosition = newPosition;
         }
     }
 }

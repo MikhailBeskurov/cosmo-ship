@@ -7,30 +7,28 @@ namespace CosmoShip.Scripts.World.Views.Entities.Entity
 {
     public class FlyingSaucerViews: BaseEntityView
     {
-        protected override IMovementModule _movementModule { get; set; }
-
+        private PathfinderMovement _pathfinderMovement;
         public override void Init(EntityData entityData)
         {
             base.Init(entityData);
-            _movementModule = new PathfinderMovement(entityData.CurrentPosition, Quaternion.Euler(Vector2.up),
-                entityData.DirectionMove, entityData.MoveSpeedEntity, gameObject.GetHashCode());
+            _pathfinderMovement = new PathfinderMovement(entityData, gameObject.GetHashCode());
 
-            _movementModule.Position.Subscribe(v =>
+            _pathfinderMovement.Position.Subscribe(v =>
             {
-                EntityInfo.SetCurrentPosition(v);
+                EntityInfo.PositionTo(v);
                 transform.position = v;
             });
-            _movementModule.Rotation.Subscribe(v =>
+            
+            _pathfinderMovement.Rotation.Subscribe(v =>
             {
                 transform.rotation = v;
             });
-            _movementModule.TeleportationToPoint(entityData.CurrentPosition);
         }
         
         public override void UpdateView(float deltaTime)
         {
             base.UpdateView(deltaTime);
-            _movementModule.Update(Time.deltaTime);
+            _pathfinderMovement.Update(Time.deltaTime);
         }
     }
 }
