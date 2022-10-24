@@ -18,26 +18,38 @@ MonoBehaviour:
     HealtsPoints: 2
     ScoreOnDestroy: 500
     Damage: 1
-    MoveSpeedEntity: 5
-    RotationSpeedEntity: 10
+    MovementSettings:
+      SpeedRotation: 10
+      SpeedMovement: 10
+      SmoothVelocity: 0
+      InertiaSpeed: 0
   - EntityType: 1
     EntityView: {fileID: 8163539068442330423, guid: d5ebfa67c8f1c8e48b8a1d38653bb8e5, type: 3}
     HealtsPoints: 1
     ScoreOnDestroy: 250
     Damage: 1
-    MoveSpeedEntity: 10
-    RotationSpeedEntity: 15
+    MovementSettings:
+      SpeedRotation: 15
+      SpeedMovement: 15
+      SmoothVelocity: 0
+      InertiaSpeed: 0
   - EntityType: 2
     EntityView: {fileID: 3096508488527732820, guid: fe48d1cc729d38043accf79eb60de37a, type: 3}
     HealtsPoints: 1
     ScoreOnDestroy: 100
     Damage: 1
-    MoveSpeedEntity: 15
-    RotationSpeedEntity: 20
+    MovementSettings:
+      SpeedRotation: 15
+      SpeedMovement: 15
+      SmoothVelocity: 0
+      InertiaSpeed: 0
   - EntityType: 3
     EntityView: {fileID: 5005897702732414764, guid: c2d3dc479d782f04db3626bffe9df10e, type: 3}
     HealtsPoints: 1
     ScoreOnDestroy: 250
     Damage: 1
-    MoveSpeedEntity: 10
-    RotationSpeedEntity: 20
+    MovementSettings:
+      SpeedRotation: 0
+      SpeedMovement: 4
+      SmoothVelocity: 4
+      InertiaSpeed: 2

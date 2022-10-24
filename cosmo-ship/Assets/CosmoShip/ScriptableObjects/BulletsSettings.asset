@@ -16,8 +16,16 @@ MonoBehaviour:
   - BulletView: {fileID: 6115516857033476916, guid: a0693fd1f67463644b9c472fb3e339f0, type: 3}
     BulletType: 0
     Damage: 1
-    MoveSpeedBullet: 50
+    MovementSettings:
+      SpeedRotation: 0
+      SpeedMovement: 60
+      SmoothVelocity: 0
+      InertiaSpeed: 0
   - BulletView: {fileID: 8325468041560832797, guid: 57bde9255cdeb524393abd4ac9dc3327, type: 3}
     BulletType: 1
     Damage: 2
-    MoveSpeedBullet: 100
+    MovementSettings:
+      SpeedRotation: 0
+      SpeedMovement: 110
+      SmoothVelocity: 0
+      InertiaSpeed: 0
